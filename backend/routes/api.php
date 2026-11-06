@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\CadastroController;
 use App\Http\Controllers\Api\V1\ReferenciasController;
 use App\Http\Controllers\Api\V1\SaudeController;
 use Illuminate\Support\Facades\Route;
@@ -11,3 +12,7 @@ Route::get('/saude', SaudeController::class)
     ->withoutMiddleware(EnsureFrontendRequestsAreStateful::class)
     ->name('saude');
 Route::get('/referencias', ReferenciasController::class)->name('referencias');
+
+Route::post('/auth/cadastro', CadastroController::class)
+    ->middleware('throttle:cadastro')
+    ->name('auth.cadastro');

@@ -25,16 +25,22 @@ import Status from '../paginas/dev/Status.jsx';
 import Atleta from '../paginas/treinador/Atleta.jsx';
 import Atletas from '../paginas/treinador/Atletas.jsx';
 import AppShell from './AppShell.jsx';
+import LayoutPublico from './LayoutPublico.jsx';
 
 // Proteção por login e por papel entra a partir do PR-05: por enquanto todas as rotas abrem sem sessão.
 export const rotas = [
-  // Públicas, sem o AppShell.
-  { path: 'entrar', Component: Entrar },
-  { path: 'cadastro', Component: Cadastro },
-  { path: 'esqueci-a-senha', Component: EsqueciASenha },
-  { path: 'redefinir-senha', Component: RedefinirSenha },
-  { path: 'termos', Component: Termos },
-  { path: 'privacidade', Component: Privacidade },
+  // Públicas, sem o AppShell: só o landmark main do LayoutPublico.
+  {
+    Component: LayoutPublico,
+    children: [
+      { path: 'entrar', Component: Entrar },
+      { path: 'cadastro', Component: Cadastro },
+      { path: 'esqueci-a-senha', Component: EsqueciASenha },
+      { path: 'redefinir-senha', Component: RedefinirSenha },
+      { path: 'termos', Component: Termos },
+      { path: 'privacidade', Component: Privacidade },
+    ],
+  },
   // Dentro do AppShell (navegação principal).
   {
     Component: AppShell,
