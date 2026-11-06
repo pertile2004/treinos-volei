@@ -17,6 +17,7 @@ Estrutura real desde o PR-01 (tudo em backend/):
 - config/logging.php: canais `daily` (desenvolvimento) e `stderr` (produção e padrão sem LOG_CHANNEL) com JsonFormatter; o Context entra em `extra`.
 - lang/pt_BR: mensagens de validação, autenticação, paginação e senha.
 - Raiz: docker-compose.yml (postgres:17 com os bancos volleypro e volleypro_teste, e Mailpit), scripts/dev.mjs (preparação do `npm run dev` e o `npm run dev:api`) e .mcp.json (Laravel Boost).
+- Desde o PR-16: rotas autenticadas em routes/api.php no grupo `auth:sanctum` + `throttle:api` (limitador `api` no AppServiceProvider); fluxo completo rota → RegistrarSessaoRequest → SessaoController → SessaoService (DB::transaction, idempotência por id_cliente) → Sessao/SessaoSerie, autorização por SessaoPolicy (404 via denyAsNotFound) e resposta por SessaoResource/SessaoSerieResource.
 - Testes: o phpunit.xml usa o banco volleypro_teste; a variável de ambiente DB_DATABASE, se existir, tem precedência.
 
 ## Frontend
@@ -31,6 +32,7 @@ O que existe desde o PR-02 (tudo em frontend/):
 - src/componentes/: Pagina (h1 e título do documento), Carregando, MensagemDeErro e EstadoVazio. Desde o PR-03, o design system: Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas (com PainelDaAba), Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao. Um arquivo por componente, com o teste ao lado; todos aceitam `className`, repassam as demais props à raiz, recebem dados só por props e trazem os próprios ícones em SVG inline.
 - src/paginas/: uma página por tela, só com o título; paginas/dev/Status.jsx consulta /api/v1/saude com TanStack Query; paginas/dev/CatalogoDeComponentes.jsx junta as seções de paginas/dev/catalogo/ (Base, Navegação, Treino e Apoio).
 - src/estilos/tokens.css: tokens do docs/DESIGN.md no `@theme` do Tailwind 4 (a paleta padrão fica desligada; finais desde o PR-03, sem conferência com o Figma). src/estilos/global.css: foco visível global e `prefers-reduced-motion`.
+- Desde o PR-16: src/funcionalidades/sessoes/ (api.js e hooks.js do POST/GET /sessoes) e src/funcionalidades/treino-ativo/ (maquinaDoTreino.js: reducer puro; armazenamentoDoTreino.js: localStorage versionado; montarSessao.js: corpo do POST; navegador.js: storage, UUID e vibração; hooks.js: useTreinoAtivo; componentes/ das fases). Páginas /treinar/:treinoId (TreinoAtivo.jsx) e /treino (Treino.jsx). Os fluxos do Playwright ficam em frontend/e2e/ (fora do Vitest).
 - src/testes/: preparação do Vitest (jest-dom, matcher `toHaveNoViolations` do vitest-axe e servidor MSW que falha em requisição não prevista) e o auxiliar `renderizarRotas`.
 
 ## Autenticação

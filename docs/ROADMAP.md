@@ -25,7 +25,7 @@ Regras:
 | 13 | Treinos: Meus Treinos e detalhe | Integrante 2 | 12 | não | ☐ | |
 | 14 | Treinos: alteração | Integrante 3 | 13 | não | ☐ | |
 | 15 | Treinos: exclusão | Integrante 4 | 14 | não | ☐ | |
-| 16 | Modo treino ativo e salvar sessão | Integrante 5 | 13 | não | ☐ | |
+| 16 | Modo treino ativo e salvar sessão | Integrante 5 | 13 | não | ✅ | |
 | 17 | Registro rápido "Já treinei" | Integrante 6 | 16 | não | ☐ | |
 | 18 | Histórico de treinos | Integrante 1 | 16 | não | ☐ | |
 | 19 | Evolução: estatísticas e gráficos | Integrante 2 | 18 | não | ☐ | |

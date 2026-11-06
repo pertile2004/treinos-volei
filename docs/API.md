@@ -76,3 +76,45 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 
 ### Cabeçalhos de segurança (todas as respostas)
 `X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+
+## PR-16 — sessões de treino (POST /sessoes e GET /sessoes/{id})
+
+Rotas no grupo `auth:sanctum` + `throttle:api` (limitador `api`: 60 requisições por minuto por usuário, definido no AppServiceProvider; acima disso 429 com a mensagem fixa). Sem sessão: 401. Datas de entrada em ISO 8601 **com fuso** (`2026-11-06T21:00:00Z`, `2026-11-06T18:00:00.000-03:00`); sem fuso → 422. Datas de saída sempre em UTC com `Z`.
+
+### POST /sessoes — logado (qualquer papel)
+| Campo | Regras |
+|---|---|
+| id_cliente | obrigatório, uuid gerado no cliente; chave da idempotência |
+| origem | obrigatório; neste PR só `cronometro` (`registro_rapido` entra no PR-17) |
+| treino_id | obrigatório quando origem = cronometro, inteiro; treino precisa existir, não estar excluído e ser visível ao usuário (RN-06: autor, público, ou atletas do autor), senão 404 |
+| iniciada_em, finalizada_em | obrigatórios, ISO 8601 com fuso; finalizada_em ≥ iniciada_em e ≤ agora + 5 min |
+| duracao_segundos | obrigatório, inteiro 0–86400 (tempo ativo, sem pausas) |
+| observacao | opcional, texto até 1000 |
+| series | obrigatório, lista de 1 a 200 itens |
+| series.*.exercicio_id | obrigatório, inteiro; precisa ser exercício de um item do treino (exercício excluído da biblioteca é aceito, RN-07); fora do treino → 422 em `series.N.exercicio_id` |
+| series.*.numero | obrigatório, inteiro 1–999; o par (exercicio_id, numero) não se repete |
+| series.*.repeticoes, acertos, erros | opcionais, inteiros 0–999 (acertos e erros gravam 0 quando ausentes) |
+| series.*.duracao_segundos | opcional, inteiro 0–86400 |
+
+`usuario_id` e `fundamento` nunca vêm do cliente (ignorados se enviados): usuario_id é o usuário logado e o fundamento de cada série é copiado do exercício no servidor.
+
+Idempotência: mesmo `id_cliente` do mesmo usuário → responde a sessão já gravada, sem gravar nada e sem revalidar treino ou séries (vale mesmo que o treino tenha sido excluído depois). `id_cliente` já usado por outro usuário → 422 em `id_cliente` ("Este id_cliente já foi usado em outra sessão."), sem revelar a sessão alheia. Dois envios simultâneos: o índice único barra o segundo e o Service devolve a sessão gravada pelo primeiro.
+
+- 201 no primeiro envio, 200 no reenvio; mesmo corpo nos dois casos:
+```json
+{ "data": {
+  "id": 40, "id_cliente": "0b8f6c1e-3f0a-4a57-9d0e-2a4c6c1f7b11", "origem": "cronometro",
+  "treino": { "id": 12, "nome": "Recepção básica" },
+  "iniciada_em": "2026-11-06T21:00:00Z", "finalizada_em": "2026-11-06T21:38:10Z",
+  "duracao_segundos": 2100, "observacao": null,
+  "series": [
+    { "id": 301, "exercicio": { "id": 5, "nome": "Manchete na parede", "removido": false },
+      "fundamento": "recepcao", "numero": 1, "repeticoes": 10, "acertos": 7, "erros": 3, "duracao_segundos": 95 }
+  ]
+} }
+```
+- `treino` vem preenchido também para treino excluído logicamente (RN-08) e é `null` só se o treino foi apagado de vez. `exercicio.removido` é `true` quando o exercício tem deleted_at (selo "removido da biblioteca"); `exercicio` é `null` só se foi apagado de vez. `series` na ordem de envio.
+- Erros: 401 · 404 treino inexistente, excluído ou não visível · 422 validação · 429 · 419 CSRF (o http.js repete uma vez).
+
+### GET /sessoes/{id} — dono
+- 200 com o mesmo formato acima. 404 para sessão inexistente ou de outro usuário (SessaoPolicy com `denyAsNotFound`; nunca 403). 401 sem sessão. 429 acima do limite.

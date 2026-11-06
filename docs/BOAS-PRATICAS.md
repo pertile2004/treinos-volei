@@ -14,13 +14,13 @@ A coluna "Onde" recebe os caminhos dos arquivos conforme os PRs entregam.
 | Nomenclatura expressiva | Português claro, sem abreviações; Pint e ESLint | backend/pint.json, frontend/src/componentes/ (componentes e props em português) |
 | Funções pequenas | Revisão em todo PR e análise estática | |
 | Tratamento de erros | Handler central com JSON padrão e request_id; nada de catch silencioso | backend/bootstrap/app.php, backend/tests/Feature/ErrosJsonTest.php |
-| ORM | Eloquent | |
-| Migrations | Todo o schema versionado; migration mergeada nunca é editada | |
-| Transações | DB::transaction nos services que gravam várias tabelas | |
+| ORM | Eloquent | backend/app/Models (atributos #[Table] e #[Fillable]; relações com withTrashed em Sessao e SessaoSerie) |
+| Migrations | Todo o schema versionado; migration mergeada nunca é editada | backend/database/migrations |
+| Transações | DB::transaction nos services que gravam várias tabelas | backend/app/Services/SessaoService.php, backend/tests/Feature/Sessoes/RegistrarSessaoTest.php |
 | N+1 e índices | Modo estrito (lazy loading vira erro), eager loading e índices do MODELO-DE-DADOS | backend/app/Providers/AppServiceProvider.php |
-| Validação de entradas | FormRequests no servidor; Zod no front | |
+| Validação de entradas | FormRequests no servidor; Zod no front | backend/app/Http/Requests/RegistrarSessaoRequest.php |
 | Gestão de segredos | .env fora do Git, variáveis no Render e no GitHub, gitleaks no CI | .gitignore, backend/.env.example, .github/workflows/ci.yml |
-| Autenticação e autorização (RBAC) | Sanctum SPA (ADR-003), papéis + Policies, menor privilégio | |
+| Autenticação e autorização (RBAC) | Sanctum SPA (ADR-003), papéis + Policies, menor privilégio | backend/routes/api.php (auth:sanctum + throttle:api), backend/app/Policies/SessaoPolicy.php |
 | OWASP Top 10 | Checklist A01–A10 no PR-29 e revisor de segurança | |
 | Injeção de dependência e mocks | Construtor; testes substituem implementações de fronteira | backend/tests/Feature/SaudeTest.php |
 | Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | backend/tests, frontend/src/**/*.test.{js,jsx}, frontend/src/testes/ |
