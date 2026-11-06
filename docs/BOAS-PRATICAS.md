@@ -23,11 +23,11 @@ A coluna "Onde" recebe os caminhos dos arquivos conforme os PRs entregam.
 | Autenticação e autorização (RBAC) | Sanctum SPA (ADR-003), papéis + Policies, menor privilégio | |
 | OWASP Top 10 | Checklist A01–A10 no PR-29 e revisor de segurança | |
 | Injeção de dependência e mocks | Construtor; testes substituem implementações de fronteira | |
-| Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | |
-| Análise estática | Larastan, Pint, ESLint; SonarQube Cloud opcional (PR-28) | |
+| Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | frontend/src/**/*.test.{js,jsx}, frontend/src/testes/ |
+| Análise estática | Larastan, Pint, ESLint; SonarQube Cloud opcional (PR-28) | frontend/eslint.config.js, frontend/.prettierrc.json |
 | Versionamento e code review | GitHub Flow, um PR por funcionalidade, revisão em todo PR (ADR-007) | |
-| CI/CD | GitHub Actions e deploy automático no Render | |
+| CI/CD | GitHub Actions e deploy automático no Render | .github/workflows/ci.yml (jobs governanca e frontend) |
 | Logs estruturados | JSON com request_id e usuário | |
-| Correlation IDs | X-Request-Id do front até o log | |
+| Correlation IDs | X-Request-Id do front até o log | frontend/src/lib/http.js, frontend/src/lib/erros.js, frontend/src/componentes/MensagemDeErro.jsx |
 | Métricas e health checks | /up, /api/v1/saude e Laravel Pulse | |
 | Documentação | OpenAPI gerado pelo Scramble (/docs/api), README e docs/ | |
