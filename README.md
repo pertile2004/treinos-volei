@@ -37,13 +37,15 @@ Conferir: http://127.0.0.1:8000/up, http://127.0.0.1:8000/api/v1/saude, a docume
 
 O Vite encaminha /api, /sanctum e /docs para a API em http://127.0.0.1:8000. Sem a API no ar, as telas abrem e http://localhost:5173/dev/status mostra uma mensagem de erro com o botão "Tentar de novo". Para usar outras portas, defina E2E_WEB_PORT (front) e E2E_API_PORT (API) antes do comando.
 
+O catálogo do design system fica em http://localhost:5173/dev/componentes (só em desenvolvimento): todos os componentes de frontend/src/componentes/ em todos os estados. Os tokens e a tabela de contraste estão no docs/DESIGN.md.
+
 Testes e qualidade:
 - `npm run verificar` — tudo que o CI roda (documentação, autoria, lint, análise e testes do backend, lint, testes e build do front).
 - `npm run teste:api` — testes do backend (usa o banco `volleypro_teste`). Se o npm não encontrar o Composer no Windows, rode `composer --working-dir=backend test`.
 - `npm run teste:web` — testes do front (Vitest); `npm --prefix frontend run test:cobertura` mostra a cobertura.
 - `composer --working-dir=backend formatar` — formata o PHP com o Pint.
 - `npm --prefix frontend run lint` e `npm --prefix frontend run formatar` — ESLint e Prettier.
-- `npm --prefix frontend run build` e `npm --prefix frontend run preview` — build de produção e prévia em http://localhost:4173.
+- `npm --prefix frontend run build` e `npm --prefix frontend run preview` — build de produção e prévia em http://localhost:4173. É na prévia (não no `dev`) que o PWA existe: manifest, service worker e a oferta de instalação do Chrome/Edge. Se o navegador ficar preso numa versão antiga, clique em "Atualizar" no aviso ou use DevTools > Application > Service Workers > Unregister.
 
 ## Equipe
 docs/INTEGRANTES.md

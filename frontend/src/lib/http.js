@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { limparCachesDoApp } from './pwa.js';
 
 export const http = axios.create({
   baseURL: '/api/v1',
@@ -32,9 +33,13 @@ http.interceptors.response.use(
       await buscarCookieCsrf();
       return http.request(config);
     }
-    if (status === 401 && window.location.pathname !== '/entrar') {
-      const pedida = window.location.pathname + window.location.search;
-      navegar(`/entrar?voltar=${encodeURIComponent(pedida)}`);
+    if (status === 401) {
+      // Sessão encerrada: os dados do usuário guardados pelo service worker não podem ficar no aparelho.
+      limparCachesDoApp().catch(() => {});
+      if (window.location.pathname !== '/entrar') {
+        const pedida = window.location.pathname + window.location.search;
+        navegar(`/entrar?voltar=${encodeURIComponent(pedida)}`);
+      }
     }
     return Promise.reject(erro);
   },
