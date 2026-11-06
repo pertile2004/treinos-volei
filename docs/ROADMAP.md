@@ -28,7 +28,7 @@ Regras:
 | 16 | Modo treino ativo e salvar sessão | Integrante 5 | 13 | não | ☐ | |
 | 17 | Registro rápido "Já treinei" | Integrante 6 | 16 | não | ☐ | |
 | 18 | Histórico de treinos | Integrante 1 | 16 | não | ☐ | |
-| 19 | Evolução: estatísticas e gráficos | Integrante 2 | 18 | não | ✅ | |
+| 19 | Evolução: estatísticas e gráficos | Integrante 2 | 18 | não | ✅ | [#7](https://github.com/pertile2004/treinos-volei/pull/7) |
 | 20 | Início (home) | Integrante 3 | 19 | não | ☐ | |
 | 21 | Agenda e lembretes no app | Integrante 4 | 20 | só o lembrete | ☐ | |
 | 22 | Treinador: código e atletas | Integrante 5 | 07 | sim | ☐ | |
