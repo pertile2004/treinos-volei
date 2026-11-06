@@ -20,13 +20,16 @@ return [
     |--------------------------------------------------------------------------
     |
     | O DemoSeeder cria contas com senha conhecida, por isso só roda nos
-    | ambientes listados. A senha nunca fica no repositório: vem do .env.
+    | ambientes listados. As senhas nunca ficam no repositório: vêm do .env.
+    | O admin tem senha própria (DEMO_SENHA_ADMIN): quem recebe a senha do
+    | jogador para testar não entra como administrador.
     |
     */
 
     'demo' => [
         'ambientes' => ['local', 'demo', 'testing'],
         'senha' => env('DEMO_SENHA'),
+        'senha_admin' => env('DEMO_SENHA_ADMIN'),
     ],
 
 ];

@@ -1,6 +1,6 @@
 // Fluxo 4 (RF-11): o usuário demo entra, abre /evolucao, vê os gráficos, troca de aba e abre a tabela.
 // Infraestrutura (playwright.config.js, webServer, job e2e) nasce no PR-05; o banco do E2E precisa do DemoSeeder.
-// O e-mail do Guto é a constante DemoSeeder::EMAIL_GUTO; a senha vem de DEMO_SENHA (a mesma variável que o seeder lê),
+// O e-mail do Guto é a constante DemoSeeder::EMAIL_GUTO; a senha vem de DEMO_SENHA (a mesma variável que o seeder lê para o Guto; o admin usa DEMO_SENHA_ADMIN),
 // nunca do repositório.
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';

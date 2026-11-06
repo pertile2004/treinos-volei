@@ -126,3 +126,28 @@ it('se recusa a rodar sem a senha de demonstracao configurada', function () {
 
     expect(User::query()->count())->toBe(0);
 });
+
+it('da ao admin uma senha propria, diferente da senha das outras contas', function () {
+    $this->seed(DemoSeeder::class);
+
+    $admin = User::query()->where('email', DemoSeeder::EMAIL_ADMIN)->firstOrFail();
+    $guto = User::query()->where('email', DemoSeeder::EMAIL_GUTO)->firstOrFail();
+    $treinadora = User::query()->where('email', DemoSeeder::EMAIL_TREINADORA)->firstOrFail();
+
+    expect(Hash::check(config('volleypro.demo.senha_admin'), $admin->password))->toBeTrue()
+        ->and(Hash::check(config('volleypro.demo.senha'), $admin->password))->toBeFalse()
+        ->and(Hash::check(config('volleypro.demo.senha'), $guto->password))->toBeTrue()
+        ->and(Hash::check(config('volleypro.demo.senha'), $treinadora->password))->toBeTrue();
+});
+
+it('se recusa a rodar sem a senha do admin ou com ela igual a senha das outras contas', function () {
+    config(['volleypro.demo.senha_admin' => null]);
+
+    expect(fn () => $this->seed(DemoSeeder::class))->toThrow(RuntimeException::class, 'DEMO_SENHA_ADMIN');
+
+    config(['volleypro.demo.senha_admin' => config('volleypro.demo.senha')]);
+
+    expect(fn () => $this->seed(DemoSeeder::class))->toThrow(RuntimeException::class, 'diferente');
+
+    expect(User::query()->count())->toBe(0);
+});

@@ -22,8 +22,9 @@ use RuntimeException;
  * Dados de demonstração: o jogador Guto com cerca de 13 semanas de sessões,
  * um admin, uma treinadora com dois atletas e treinos públicos em destaque.
  *
- * Só roda nos ambientes de config('volleypro.demo.ambientes'); a senha vem de
- * DEMO_SENHA. É idempotente: usuários por e-mail, exercícios e treinos por nome;
+ * Só roda nos ambientes de config('volleypro.demo.ambientes'); a senha do jogador
+ * e da treinadora vem de DEMO_SENHA e a do admin de DEMO_SENHA_ADMIN (diferente,
+ * para quem testa com a senha do Guto não entrar como administrador). É idempotente: usuários por e-mail, exercícios e treinos por nome;
  * as sessões do Guto são recriadas a cada execução.
  *
  * Tudo é determinístico (sem aleatório) para o cálculo manual do aceite. Semana
@@ -63,14 +64,15 @@ class DemoSeeder extends Seeder
             ));
         }
 
-        $senha = config('volleypro.demo.senha');
+        $senha = $this->senha('senha', 'DEMO_SENHA');
+        $senhaAdmin = $this->senha('senha_admin', 'DEMO_SENHA_ADMIN');
 
-        if (! is_string($senha) || $senha === '') {
-            throw new RuntimeException('Defina DEMO_SENHA no .env para o DemoSeeder criar as contas de demonstração.');
+        if ($senhaAdmin === $senha) {
+            throw new RuntimeException('DEMO_SENHA_ADMIN precisa ser diferente de DEMO_SENHA: a senha do jogador não pode abrir a conta de administrador.');
         }
 
-        DB::transaction(function () use ($senha): void {
-            $admin = $this->usuario(self::EMAIL_ADMIN, 'Administração VOLLEY PRO', Papel::Admin, $senha);
+        DB::transaction(function () use ($senha, $senhaAdmin): void {
+            $admin = $this->usuario(self::EMAIL_ADMIN, 'Administração VOLLEY PRO', Papel::Admin, $senhaAdmin);
             $exercicios = $this->exercicios($admin);
             $this->treinosPublicos($admin, $exercicios);
 
@@ -87,6 +89,17 @@ class DemoSeeder extends Seeder
             $guto = $this->usuario(self::EMAIL_GUTO, 'Guto Silva', Papel::Jogador, $senha, 3);
             $this->sessoesDoGuto($guto, $exercicios);
         });
+    }
+
+    private function senha(string $chave, string $variavel): string
+    {
+        $senha = config("volleypro.demo.{$chave}");
+
+        if (! is_string($senha) || $senha === '') {
+            throw new RuntimeException("Defina {$variavel} no .env para o DemoSeeder criar as contas de demonstração.");
+        }
+
+        return $senha;
     }
 
     private function usuario(string $email, string $nome, Papel $papel, string $senha, int $metaSemanal = 3): User

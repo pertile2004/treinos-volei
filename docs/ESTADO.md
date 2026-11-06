@@ -3,10 +3,10 @@
 
 ## Agora
 - Último PR concluído: PR-19 — Evolução: estatísticas e gráficos — Integrante 2 — 2026-11-06 (feito em paralelo com os cards 04 a 18, a partir da base PR-01/02/03 mais a camada de dados adiantada dos cards 04, 08, 12 e 16).
-- O que entrou: GET /api/v1/estatisticas?periodo=semana|mes|3meses|ano (EstatisticasService com três consultas agregadas em America/Sao_Paulo, percentual null sem tentativas, frequência da semana atual contra a meta); tela /evolucao com abas, gráfico de linha (recharts 3.10.1), barras por fundamento com "sem dados", cartão de frequência, "Ver como tabela" e estados carregando, erro, 401 e vazio; src/lib/datas.js, formatos.js e tabelas.js; módulo funcionalidades/referencias; DemoSeeder (Guto com 13 semanas, admin, treinadora CARLA234 com dois atletas, treinos públicos; só local, demo e testing; senha em DEMO_SENHA); backend/config/volleypro.php; Playwright fluxo 4 escrito em frontend/e2e/ (roda quando o PR-05 trouxer a infraestrutura). Junto vêm as migrations, models e factories de users, exercicios, treinos, treino_itens, sessoes e sessao_series e o acesso à API de exercícios e treinos no front.
+- O que entrou: GET /api/v1/estatisticas?periodo=semana|mes|3meses|ano (EstatisticasService com três consultas agregadas em America/Sao_Paulo, percentual null sem tentativas, frequência da semana atual contra a meta); tela /evolucao com abas, gráfico de linha (recharts 3.10.1), barras por fundamento com "sem dados", cartão de frequência, "Ver como tabela" e estados carregando, erro, 401 e vazio; src/lib/datas.js, formatos.js e tabelas.js; módulo funcionalidades/referencias; DemoSeeder (Guto com 13 semanas, admin, treinadora CARLA234 com dois atletas, treinos públicos; só local, demo e testing; senha em DEMO_SENHA e a do admin em DEMO_SENHA_ADMIN); backend/config/volleypro.php; Playwright fluxo 4 escrito em frontend/e2e/ (roda quando o PR-05 trouxer a infraestrutura). Junto vêm as migrations, models e factories de users, exercicios, treinos, treino_itens, sessoes e sessao_series e o acesso à API de exercícios e treinos no front.
 - Como testar:
-  1. `npm run verificar` (backend: Pint, Larastan, 181 testes; frontend: lint, 513 testes, build).
-  2. Banco migrado: `DEMO_SENHA=<sua senha> php backend/artisan db:seed --class=DemoSeeder`; os números da semana de referência estão em docs/historico/PR-19.md.
+  1. `npm run verificar` (backend: Pint, Larastan, 183 testes; frontend: lint, 513 testes, build).
+  2. Banco migrado: `DEMO_SENHA=<sua senha> DEMO_SENHA_ADMIN=<outra senha> php backend/artisan db:seed --class=DemoSeeder`; os números da semana de referência estão em docs/historico/PR-19.md.
   3. `npm run dev:web` e abra http://localhost:5173/evolucao: sem login aparece o alerta com o link "Entrar"; com login (PR-05), os cartões, as abas e a tabela.
 - Próximo: PR-20 — Início (home) — Integrante 3 (depende do PR-19). Os cards 04 a 18 estão em andamento em outras frentes; o PR-20 também usa o login do PR-05 e as sessões do PR-16/17.
 
@@ -14,7 +14,7 @@
 - Cards 04 a 18, 21, 26 e 28 em cópias de trabalho paralelas (ver .worktrees/PAINEL.md na máquina do tech lead).
 
 ## Pendências
-- [ ] PR-19: rodar o Playwright fluxo 4 (frontend/e2e/fluxo-4-evolucao.spec.js) quando a infraestrutura do PR-05 existir: banco de E2E semeado com `php artisan db:seed --class=DemoSeeder`, DEMO_SENHA no ambiente, tela /entrar com campos "E-mail" e "Senha" e botão "Entrar" redirecionando para /. Ajustar o spec se os rótulos do PR-05 forem outros.
+- [ ] PR-19: rodar o Playwright fluxo 4 (frontend/e2e/fluxo-4-evolucao.spec.js) quando a infraestrutura do PR-05 existir: banco de E2E semeado com `php artisan db:seed --class=DemoSeeder`, DEMO_SENHA e DEMO_SENHA_ADMIN no ambiente, tela /entrar com campos "E-mail" e "Senha" e botão "Entrar" redirecionando para /. Ajustar o spec se os rótulos do PR-05 forem outros.
 - [ ] PR-19: conferir a tela no navegador real com login (contraste do gráfico Recharts sobre a superfície, layout em 360 px e 1440 px, foco nas abas e no botão "Ver como tabela"); no jsdom só textos e tabela foram conferidos.
 - [ ] PR-19: ao salvar sessão (PR-16/17), invalidar a query ['estatisticas'] (`chavesEstatisticas.todas()`).
 - [ ] PR-19, decisões fora da especificação: janelas de Mês (semana atual + 3), 3 Meses (semana atual + 12) e Ano (mês atual + 11) com fim inclusivo; `periodo` obrigatório; percentual com 1 casa; `frequencia.datas` incluído para o PR-20 (remover se não usar).
