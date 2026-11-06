@@ -1,0 +1,3 @@
+# Achados do gitleaks confirmados como falso positivo (formato: commit:arquivo:regra:linha).
+# PR-28: sonar.projectKey em sonar-project.properties e identificador publico, nao segredo.
+84fe8d6630e7005ccd3740a3cbf895ad059f1018:sonar-project.properties:generic-api-key:4

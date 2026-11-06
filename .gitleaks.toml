@@ -5,6 +5,6 @@ title = "VOLLEY PRO"
 [extend]
 useDefault = true
 
-[[allowlists]]
+[allowlist]
 description = "sonar-project.properties: chave e organizacao do projeto no SonarQube Cloud sao identificadores publicos, nao segredo (PR-28). O token fica so no segredo SONAR_TOKEN do repositorio."
-paths = ['''^sonar-project\.properties$''']
+paths = ['''sonar-project\.properties''']
