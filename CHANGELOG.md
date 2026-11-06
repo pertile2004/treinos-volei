@@ -9,3 +9,10 @@ Formato Keep a Changelog, em português. Versões em SemVer.
 - Qualidade do backend: Pest 4, Larastan nível 6, Pint, Scramble (/docs/api em desenvolvimento), Laravel Boost e o job `backend` no CI.
 - Esqueleto do frontend (PR-02): app React navegável em frontend/ com as rotas de todas as telas (só o título), página 404, AppShell com a navegação principal, cliente HTTP (X-Request-Id, repetição única em 419 e ida para /entrar em 401), componentes Carregando, MensagemDeErro e EstadoVazio e a página /dev/status (só em desenvolvimento).
 - Scripts `npm run dev:web` e `npm run teste:web` na raiz e job `frontend` no CI (lint, testes com cobertura, build e auditoria das dependências).
+- Design system (PR-03): tokens finais no tema do Tailwind (borda de controle, fonte do sistema, tamanhos de destaque e de cronômetro) e os componentes Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas, Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao, acessíveis e testados com axe.
+- Catálogo /dev/componentes (só em desenvolvimento), com todos os componentes em todos os estados, e tabela de contraste no docs/DESIGN.md.
+- Observabilidade (PR-28): Laravel Pulse 1.8.1 com o painel /pulse só para admin (gate viewPulse); linha de log JSON por requisição no canal `requisicoes` (request_id, método, padrão da rota, status, duração em ms e usuário), fonte da latência e da taxa de erros por rota; botão "Copiar código" e pedido para informar o código ao suporte na MensagemDeErro; link "Métricas" na área admin; proxy do Vite para /pulse e os endpoints do Livewire.
+- Análise de qualidade: sonar-project.properties e job `sonar` no CI, que roda só quando o segredo SONAR_TOKEN existe; os jobs frontend e backend guardam a cobertura (lcov e clover) como artefato.
+### Alterado
+- AppShell usa os componentes do design system: barra de navegação inferior abaixo de 1024 px e barra lateral a partir daí, com ícones.
+- Transições e animações são desligadas para quem pede menos movimento no sistema.

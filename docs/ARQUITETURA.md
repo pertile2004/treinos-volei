@@ -24,30 +24,30 @@ src/app (rotas e provedores), src/paginas, src/funcionalidades/<modulo>/ (api.js
 
 O que existe desde o PR-02 (tudo em frontend/):
 - src/main.jsx: cria o roteador (createBrowserRouter) e o QueryClient e liga a navegação do cliente HTTP ao roteador.
-- src/app/rotas.jsx: tabela única de rotas. As públicas (/entrar, /cadastro, /esqueci-a-senha, /redefinir-senha, /termos e /privacidade) ficam fora do AppShell; as demais ficam dentro. A /dev/status só existe em desenvolvimento e `*` é a 404. A proteção por login e por papel entra a partir do PR-05.
-- src/app/AppShell.jsx: link "Pular para o conteúdo", navegação principal (fixa embaixo; coluna lateral a partir de 1024 px) e o `<main id="conteudo">`. A lista `itens` e o componente NavegacaoPrincipal são provisórios: o PR-03 troca por NavInferior e BarraLateral sem mexer nas rotas.
+- src/app/rotas.jsx: tabela única de rotas. As públicas (/entrar, /cadastro, /esqueci-a-senha, /redefinir-senha, /termos e /privacidade) ficam fora do AppShell; as demais ficam dentro. A /dev/status e a /dev/componentes só existem em desenvolvimento e `*` é a 404. A proteção por login e por papel entra a partir do PR-05.
+- src/app/AppShell.jsx: link "Pular para o conteúdo", navegação principal e o `<main id="conteudo">`. Desde o PR-03 a navegação é a NavInferior (fixa embaixo) abaixo de 1024 px e a BarraLateral a partir daí; só uma fica montada por vez, escolhida por src/lib/useLarguraMinima.js (ADR-025).
 - src/lib/http.js: axios com baseURL /api/v1, withCredentials e withXSRFToken; X-Request-Id novo a cada requisição; em 419 busca /sanctum/csrf-cookie e repete uma vez; em 401 vai para /entrar?voltar=<rota pedida>.
 - src/lib/erros.js: `descreverErro(erro)` devolve status, mensagem em pt-BR e o request_id (do corpo, do cabeçalho da resposta ou o enviado).
-- src/componentes/: Pagina (h1 e título do documento), Carregando, MensagemDeErro e EstadoVazio.
-- src/paginas/: uma página por tela, só com o título; paginas/dev/Status.jsx consulta /api/v1/saude com TanStack Query.
-- src/estilos/tokens.css: tokens provisórios do docs/DESIGN.md no `@theme` do Tailwind 4 (a paleta padrão fica desligada); o PR-03 substitui.
-- src/testes/: preparação do Vitest (jest-dom e servidor MSW que falha em requisição não prevista) e o auxiliar `renderizarRotas`.
+- src/componentes/: Pagina (h1 e título do documento), Carregando, MensagemDeErro e EstadoVazio. Desde o PR-03, o design system: Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas (com PainelDaAba), Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao. Um arquivo por componente, com o teste ao lado; todos aceitam `className`, repassam as demais props à raiz, recebem dados só por props e trazem os próprios ícones em SVG inline.
+- src/paginas/: uma página por tela, só com o título; paginas/dev/Status.jsx consulta /api/v1/saude com TanStack Query; paginas/dev/CatalogoDeComponentes.jsx junta as seções de paginas/dev/catalogo/ (Base, Navegação, Treino e Apoio).
+- src/estilos/tokens.css: tokens do docs/DESIGN.md no `@theme` do Tailwind 4 (a paleta padrão fica desligada; finais desde o PR-03, sem conferência com o Figma). src/estilos/global.css: foco visível global e `prefers-reduced-motion`.
+- src/testes/: preparação do Vitest (jest-dom, matcher `toHaveNoViolations` do vitest-axe e servidor MSW que falha em requisição não prevista) e o auxiliar `renderizarRotas`.
 
 ## Autenticação
 GET /sanctum/csrf-cookie → POST /api/v1/auth/entrar → cookie de sessão HttpOnly → requisições com withCredentials e X-XSRF-TOKEN. Em 419, novo cookie e uma única repetição. Sessões no banco.
 
 ## Erros e logs
-Exceções da API viram JSON com message, errors (validação) e request_id, sem stack trace fora de local. Logs em JSON com request_id (Context), em stderr na produção e em arquivo no desenvolvimento. O front envia X-Request-Id em toda requisição e mostra o id nas mensagens de erro.
+Exceções da API viram JSON com message, errors (validação) e request_id, sem stack trace fora de local. Logs em JSON com request_id (Context), em stderr na produção e em arquivo no desenvolvimento. O middleware RegistrarRequisicao grava uma linha por requisição (padrão da rota, status, duração, usuário) no canal `requisicoes`: é a latência e a taxa de erros por rota. O front envia X-Request-Id em toda requisição e mostra o id nas mensagens de erro, com botão para copiar. Métricas do servidor no Laravel Pulse (/pulse, só admin pelo gate viewPulse).
 
 ## Qualidade
 - Backend: Pest (unidade e integração com banco real), Larastan e Pint.
-- Frontend: Vitest + Testing Library + MSW, ESLint (react-hooks, jsx-a11y) e Prettier.
+- Frontend: Vitest + Testing Library + MSW + vitest-axe, ESLint (react-hooks, jsx-a11y) e Prettier.
 - Ponta a ponta: Playwright + axe.
-- O CI no GitHub Actions bloqueia o merge com qualquer falha.
+- O CI no GitHub Actions bloqueia o merge com qualquer falha. SonarQube Cloud roda no job `sonar` só quando o segredo SONAR_TOKEN existe (ADR-027) e não é obrigatório.
 
 ## Dependências aprovadas
 Fixe versões exatas. Adicionar outra exige registro no DECISOES.md.
-- Backend: laravel/framework 13, laravel/sanctum, dedoc/scramble, laravel/tinker (ADR-018), laravel/pulse (PR-28).
+- Backend: laravel/framework 13, laravel/sanctum, dedoc/scramble, laravel/tinker (ADR-018), laravel/pulse 1.8.1 (ADR-026).
 - Backend, desenvolvimento: pestphp/pest 4, pestphp/pest-plugin-laravel, larastan/larastan, laravel/pint, laravel/boost, fakerphp/faker, mockery/mockery.
 - Frontend: react, react-dom, react-router, @tanstack/react-query, axios, react-hook-form, zod, @hookform/resolvers, recharts, tailwindcss e @tailwindcss/vite (4.2.2 ou mais nova), vite 8, @vitejs/plugin-react, vite-plugin-pwa (PR-26), idb-keyval (PR-27).
 - Frontend, desenvolvimento: vitest, @vitest/coverage-v8, jsdom, @testing-library/react, @testing-library/dom, @testing-library/user-event, @testing-library/jest-dom, msw, vitest-axe, eslint, @eslint/js, globals, eslint-plugin-react-hooks, eslint-plugin-jsx-a11y, prettier, @playwright/test, @axe-core/playwright.

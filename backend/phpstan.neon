@@ -9,3 +9,6 @@ parameters:
         - config
         - database
         - routes
+    excludePaths:
+        # Migration publicada pelo laravel/pulse, mantida como veio do pacote.
+        - database/migrations/*_create_pulse_tables.php

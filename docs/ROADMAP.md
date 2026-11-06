@@ -12,7 +12,7 @@ Regras:
 | 00 | Fundação do repositório | Integrante 1 | — | não | ✅ | [#1](https://github.com/pertile2004/treinos-volei/pull/1) |
 | 01 | Esqueleto do backend | Integrante 2 | 00 | não | ✅ | [#3](https://github.com/pertile2004/treinos-volei/pull/3) |
 | 02 | Esqueleto base do frontend | Integrante 3 | 00 | não | ✅ | [#2](https://github.com/pertile2004/treinos-volei/pull/2) |
-| 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ☐ | |
+| 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ✅ | |
 | 04 | Cadastro, Termos e Privacidade | Integrante 5 | 01, 03 | não | ☐ | |
 | 05 | Entrar, sair e rotas protegidas | Integrante 6 | 04 | não | ☐ | |
 | 06 | Recuperação de senha | Integrante 1 | 05 | não | ☐ | |
@@ -37,7 +37,7 @@ Regras:
 | 25 | Layout desktop completo | Integrante 2 | 20 | sim | ☐ | |
 | 26 | PWA instalável | Integrante 3 | 20 | sim | ☐ | |
 | 27 | Modo offline do treino | Integrante 4 | 26, 16 | sim | ☐ | |
-| 28 | Observabilidade e análise de qualidade | Integrante 5 | 20 | Pulse e Sonar | ☐ | |
+| 28 | Observabilidade e análise de qualidade | Integrante 5 | 20 | Pulse e Sonar | ✅ | [#8](https://github.com/pertile2004/treinos-volei/pull/8) |
 | 29 | Auditoria de segurança e acessibilidade | Integrante 6 | 21 e os não cortados de 22 a 28 | não | ☐ | |
 | 30 | Deploy e demonstração | Integrante 1 | 29 | não | ☐ | |
 | 31 | Documentação final e apresentação | Integrante 2 | 30 | não | ☐ | |

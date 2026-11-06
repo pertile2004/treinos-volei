@@ -35,7 +35,14 @@ Sem Docker (PostgreSQL instalado na máquina):
 
 Conferir: http://127.0.0.1:8000/up, http://127.0.0.1:8000/api/v1/saude, a documentação da API em http://127.0.0.1:8000/docs/api (só em desenvolvimento) e http://localhost:5173/dev/status.
 
-O Vite encaminha /api, /sanctum e /docs para a API em http://127.0.0.1:8000. Sem a API no ar, as telas abrem e http://localhost:5173/dev/status mostra uma mensagem de erro com o botão "Tentar de novo". Para usar outras portas, defina E2E_WEB_PORT (front) e E2E_API_PORT (API) antes do comando.
+O Vite encaminha /api, /sanctum, /docs, /pulse e os endpoints do Livewire para a API em http://127.0.0.1:8000. Sem a API no ar, as telas abrem e http://localhost:5173/dev/status mostra uma mensagem de erro com o botão "Tentar de novo". Para usar outras portas, defina E2E_WEB_PORT (front) e E2E_API_PORT (API) antes do comando.
+
+O catálogo do design system fica em http://localhost:5173/dev/componentes (só em desenvolvimento): todos os componentes de frontend/src/componentes/ em todos os estados. Os tokens e a tabela de contraste estão no docs/DESIGN.md.
+
+Observabilidade:
+- Toda resposta traz o header X-Request-Id; a tela de erro mostra o mesmo valor como "Código do erro" com o botão "Copiar código". Para seguir um erro, procure o código em backend/storage/logs/requisicoes-AAAA-MM-DD.log (uma linha JSON por requisição, com rota, status e duração) e em laravel-AAAA-MM-DD.log.
+- Painel de métricas (Laravel Pulse) em http://localhost:5173/pulse, só para usuário com papel admin (os outros recebem 403). PULSE_ENABLED=false no backend/.env desliga a coleta.
+- SonarQube Cloud: o dono do repositório cadastra o segredo SONAR_TOKEN em Settings > Secrets and variables > Actions e confirma a chave e a organização em sonar-project.properties. Sem o segredo, o job `sonar` do CI fica verde e pulado.
 
 Testes e qualidade:
 - `npm run verificar` — tudo que o CI roda (documentação, autoria, lint, análise e testes do backend, lint, testes e build do front).

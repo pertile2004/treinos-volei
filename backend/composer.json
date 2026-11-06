@@ -12,6 +12,7 @@
         "php": "^8.4",
         "dedoc/scramble": "0.13.53",
         "laravel/framework": "13.40.0",
+        "laravel/pulse": "1.8.1",
         "laravel/sanctum": "4.3.3",
         "laravel/tinker": "3.0.2"
     },

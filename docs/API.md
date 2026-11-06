@@ -41,7 +41,7 @@ Cada PR detalha aqui os campos de requisição e resposta do que implementar.
 | GET /treinador/atletas e DELETE /treinador/atletas/{id} | treinador | atletas vinculados | 22 |
 | GET /treinador/atletas/{id}/estatisticas | treinador vinculado | evolução do atleta | 24 |
 
-Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAPI gerado do código pelo Scramble; só em local e, em produção, só para admin).
+Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up, GET /docs/api (OpenAPI gerado do código pelo Scramble; só em local e, em produção, só para admin) e GET /pulse (painel do Laravel Pulse, PR-28; só admin).
 
 ## PR-01 — saúde, referências, request id e erros
 
@@ -76,3 +76,16 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 
 ### Cabeçalhos de segurança (todas as respostas)
 `X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+
+## PR-28 — observabilidade
+
+### GET /pulse — só admin (fora de /api/v1)
+- Painel do Laravel Pulse (HTML com Livewire, em inglês), caminho em PULSE_PATH (padrão `pulse`). O painel atualiza pelos endpoints `/livewire-<8 hex>/...` do Livewire; o Vite encaminha os dois para a API.
+- Quem pode: usuário autenticado pela sessão (guard web) com papel `admin`, em qualquer ambiente (gate `viewPulse`). Visitante, jogador, treinador e usuário sem papel: 403.
+- A resposta 200 traz o header X-Request-Id como as demais. Não é JSON e não tem exemplo de corpo.
+
+### Linha de log por requisição (não é rota)
+- Toda requisição (API, /up, /pulse) grava uma linha INFO com mensagem `requisicao` no canal `requisicoes` (arquivo diário storage/logs/requisicoes.log; LOG_REQUISICOES_CHANNEL=stderr em produção), em JSON:
+  `{"message":"requisicao","context":{"request_id":"<id>","metodo":"GET","rota":"api/v1/treinos/{treino}","status":404,"duracao_ms":2.83,"usuario_id":null},"extra":{"request_id":"<id>"}}`
+- `rota` é o padrão da rota (nunca a URL com ids) e `null` quando nenhuma rota casa; `duracao_ms` tem duas casas; `usuario_id` é null sem sessão. Sem corpo, query string, cookies ou e-mail.
+- O `request_id` é o mesmo do header X-Request-Id, do `request_id` do JSON de erro e do código que a MensagemDeErro mostra ao usuário.

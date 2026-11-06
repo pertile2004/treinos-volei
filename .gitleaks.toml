@@ -1,0 +1,10 @@
+# Configuracao do gitleaks (varredura de segredos no job governanca do CI).
+# Estende as regras padrao e so libera o que comprovadamente nao e segredo.
+title = "VOLLEY PRO"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "sonar-project.properties: chave e organizacao do projeto no SonarQube Cloud sao identificadores publicos, nao segredo (PR-28). O token fica so no segredo SONAR_TOKEN do repositorio."
+paths = ['''sonar-project\.properties''']
