@@ -8,7 +8,7 @@
 - Como testar o que existe: `npm run setup` e `npm run verificar`.
 
 ## Em andamento
-- (nenhum)
+- PR-02 — Esqueleto base do frontend: em implementação
 
 ## Pendências
 - [ ] PENDENTE: o grupo vai enviar nomes, usuários do GitHub e e-mails → preencher docs/INTEGRANTES.md.
