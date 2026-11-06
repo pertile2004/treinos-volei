@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router';
 import BarraLateral from '../componentes/BarraLateral.jsx';
 import NavInferior from '../componentes/NavInferior.jsx';
+import LembreteDeHoje from '../funcionalidades/agenda/componentes/LembreteDeHoje.jsx';
 import { useLarguraMinima } from '../lib/useLarguraMinima.js';
 
 // Ícones decorativos: a cor vem do texto do item e o nome acessível é sempre o rótulo.
@@ -84,6 +85,7 @@ export default function AppShell() {
       </a>
       {telaLarga ? <BarraLateral itens={itens} /> : <NavInferior itens={itens} />}
       <main id="conteudo" tabIndex={-1} className="pb-16 lg:pb-0">
+        <LembreteDeHoje />
         <Outlet />
       </main>
     </div>
