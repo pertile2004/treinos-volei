@@ -45,3 +45,58 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_ENABLE_COMMENTS: false
+
+  backend:
+    runs-on: ubuntu-latest
+    # Usuário e senha só do banco descartável do CI (os mesmos do .env.example).
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: volleypro_teste
+      DB_USERNAME: volleypro
+      DB_PASSWORD: volleypro
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: volleypro
+          POSTGRES_PASSWORD: volleypro
+          POSTGRES_DB: volleypro_teste
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U volleypro -d volleypro_teste"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v7
+
+      - name: Instalar o PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql
+          coverage: pcov
+
+      - name: Instalar as dependências
+        run: composer --working-dir=backend install --no-interaction --prefer-dist
+
+      - name: Preparar o ambiente
+        run: |
+          cp backend/.env.example backend/.env
+          php backend/artisan key:generate
+
+      - name: Estilo (Pint)
+        run: composer --working-dir=backend lint
+
+      - name: Análise estática (Larastan)
+        run: composer --working-dir=backend analise
+
+      - name: Testes com cobertura
+        run: composer --working-dir=backend test -- --coverage
+
+      - name: Auditoria das dependências
+        run: composer --working-dir=backend audit
