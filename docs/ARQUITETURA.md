@@ -24,14 +24,14 @@ src/app (rotas e provedores), src/paginas, src/funcionalidades/<modulo>/ (api.js
 
 O que existe desde o PR-02 (tudo em frontend/):
 - src/main.jsx: cria o roteador (createBrowserRouter) e o QueryClient e liga a navegação do cliente HTTP ao roteador.
-- src/app/rotas.jsx: tabela única de rotas. As públicas (/entrar, /cadastro, /esqueci-a-senha, /redefinir-senha, /termos e /privacidade) ficam fora do AppShell; as demais ficam dentro. A /dev/status só existe em desenvolvimento e `*` é a 404. A proteção por login e por papel entra a partir do PR-05.
-- src/app/AppShell.jsx: link "Pular para o conteúdo", navegação principal (fixa embaixo; coluna lateral a partir de 1024 px) e o `<main id="conteudo">`. A lista `itens` e o componente NavegacaoPrincipal são provisórios: o PR-03 troca por NavInferior e BarraLateral sem mexer nas rotas.
+- src/app/rotas.jsx: tabela única de rotas. As públicas (/entrar, /cadastro, /esqueci-a-senha, /redefinir-senha, /termos e /privacidade) ficam fora do AppShell; as demais ficam dentro. A /dev/status e a /dev/componentes só existem em desenvolvimento e `*` é a 404. A proteção por login e por papel entra a partir do PR-05.
+- src/app/AppShell.jsx: link "Pular para o conteúdo", navegação principal e o `<main id="conteudo">`. Desde o PR-03 a navegação é a NavInferior (fixa embaixo) abaixo de 1024 px e a BarraLateral a partir daí; só uma fica montada por vez, escolhida por src/lib/useLarguraMinima.js (ADR-025).
 - src/lib/http.js: axios com baseURL /api/v1, withCredentials e withXSRFToken; X-Request-Id novo a cada requisição; em 419 busca /sanctum/csrf-cookie e repete uma vez; em 401 vai para /entrar?voltar=<rota pedida>.
 - src/lib/erros.js: `descreverErro(erro)` devolve status, mensagem em pt-BR e o request_id (do corpo, do cabeçalho da resposta ou o enviado).
-- src/componentes/: Pagina (h1 e título do documento), Carregando, MensagemDeErro e EstadoVazio.
-- src/paginas/: uma página por tela, só com o título; paginas/dev/Status.jsx consulta /api/v1/saude com TanStack Query.
-- src/estilos/tokens.css: tokens provisórios do docs/DESIGN.md no `@theme` do Tailwind 4 (a paleta padrão fica desligada); o PR-03 substitui.
-- src/testes/: preparação do Vitest (jest-dom e servidor MSW que falha em requisição não prevista) e o auxiliar `renderizarRotas`.
+- src/componentes/: Pagina (h1 e título do documento), Carregando, MensagemDeErro e EstadoVazio. Desde o PR-03, o design system: Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas (com PainelDaAba), Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao. Um arquivo por componente, com o teste ao lado; todos aceitam `className`, repassam as demais props à raiz, recebem dados só por props e trazem os próprios ícones em SVG inline.
+- src/paginas/: uma página por tela, só com o título; paginas/dev/Status.jsx consulta /api/v1/saude com TanStack Query; paginas/dev/CatalogoDeComponentes.jsx junta as seções de paginas/dev/catalogo/ (Base, Navegação, Treino e Apoio).
+- src/estilos/tokens.css: tokens do docs/DESIGN.md no `@theme` do Tailwind 4 (a paleta padrão fica desligada; finais desde o PR-03, sem conferência com o Figma). src/estilos/global.css: foco visível global e `prefers-reduced-motion`.
+- src/testes/: preparação do Vitest (jest-dom, matcher `toHaveNoViolations` do vitest-axe e servidor MSW que falha em requisição não prevista) e o auxiliar `renderizarRotas`.
 
 ## Autenticação
 GET /sanctum/csrf-cookie → POST /api/v1/auth/entrar → cookie de sessão HttpOnly → requisições com withCredentials e X-XSRF-TOKEN. Em 419, novo cookie e uma única repetição. Sessões no banco.
@@ -41,7 +41,7 @@ Exceções da API viram JSON com message, errors (validação) e request_id, sem
 
 ## Qualidade
 - Backend: Pest (unidade e integração com banco real), Larastan e Pint.
-- Frontend: Vitest + Testing Library + MSW, ESLint (react-hooks, jsx-a11y) e Prettier.
+- Frontend: Vitest + Testing Library + MSW + vitest-axe, ESLint (react-hooks, jsx-a11y) e Prettier.
 - Ponta a ponta: Playwright + axe.
 - O CI no GitHub Actions bloqueia o merge com qualquer falha.
 
