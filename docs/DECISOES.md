@@ -54,3 +54,15 @@ Cada decisão tem número, data, motivo e consequência. Nova decisão vai no fi
 - ADR-017 (2026-11-06) Portas do front e da API configuráveis por variável de ambiente; /dev/status só em desenvolvimento.
   - Motivo: os testes E2E (PR-05) e os cards feitos em paralelo na mesma máquina precisam de portas próprias; a página de status é ferramenta de desenvolvimento e não é uma tela do produto.
   - Consequência: o frontend/vite.config.js lê E2E_API_PORT (alvo do proxy, padrão 8000) e E2E_WEB_PORT (porta do dev, padrão 5173, e do preview, padrão 4173), com strictPort: se a porta estiver ocupada o Vite falha em vez de trocar de porta. A rota /dev/status só entra na tabela quando `import.meta.env.DEV` é verdadeiro: no build de produção ela não existe e o endereço cai na 404.
+- ADR-018 (2026-11-06) Dependências do backend com versão exata no backend/composer.json (PR-01): laravel/framework 13.40.0, laravel/sanctum 4.3.3, dedoc/scramble 0.13.53 e laravel/tinker 3.0.2; em desenvolvimento, pestphp/pest 4.7.8, pestphp/pest-plugin-laravel 4.1.0, larastan/larastan 3.14.0, laravel/pint 1.32.1, laravel/boost 2.10.4, fakerphp/faker 1.24.1 e mockery/mockery 1.6.15. O laravel/tinker entra na lista aprovada. Imagens do docker-compose.yml: postgres:17 e axllent/mailpit:v1.32.0.
+  - Motivo: build reproduzível, com o composer.lock versionado; o tinker vem no esqueleto oficial do Laravel e é o console que as diretrizes do Laravel Boost usam; as mensagens de validação em pt_BR foram traduzidas à mão em backend/lang/pt_BR (e lang/pt_BR.json) para não trazer um pacote de tradução de fora da lista.
+  - Consequência: atualizar uma versão é uma mudança explícita, com registro aqui; a tag do Mailpit é fixa e foi conferida no Docker Hub.
+- ADR-019 (2026-11-06) Laravel Boost instalado em backend/ só para o Claude Code, com `php artisan boost:install --guidelines --skills --mcp --no-interaction`, e Scramble com a configuração padrão do pacote.
+  - Motivo: o card pede os dois; a instalação sem interação roda igual em qualquer máquina e o padrão do Scramble já restringe /docs/api e /docs/api.json ao ambiente local.
+  - Consequência: os arquivos do Boost (boost.json, CLAUDE.md, .mcp.json e .claude/skills) ficam versionados em backend/ e o CLAUDE.md da raiz continua sendo a regra do projeto; o .mcp.json da raiz aponta para `php backend/artisan boost:mcp`; liberar a documentação da API para admin em produção fica para o PR que tratar disso.
+- ADR-020 (2026-11-06) Interface App\Contracts\VerificadorBanco (implementação VerificadorBancoPdo) na checagem de saúde.
+  - Motivo: o banco é fronteira externa e o teste do 503 precisa trocar a implementação sem derrubar o banco real.
+  - Consequência: o bind fica no AppServiceProvider; o caminho de falha real (PDO) é conferido à mão, apontando a API para uma porta fechada.
+- ADR-021 (2026-11-06) Valores do enum Nivel: iniciante, intermediario e avancado.
+  - Motivo: a especificação cita "nível" sem listar os valores; é a opção mais simples.
+  - Consequência: o grupo precisa confirmar; mudar depois exige ajustar os dados já gravados.
