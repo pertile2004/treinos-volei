@@ -20,6 +20,7 @@ import Termos from '../paginas/Termos.jsx';
 import Treino from '../paginas/Treino.jsx';
 import TreinoAtivo from '../paginas/TreinoAtivo.jsx';
 import ExerciciosAdmin from '../paginas/admin/Exercicios.jsx';
+import CatalogoDeComponentes from '../paginas/dev/CatalogoDeComponentes.jsx';
 import Status from '../paginas/dev/Status.jsx';
 import Atleta from '../paginas/treinador/Atleta.jsx';
 import Atletas from '../paginas/treinador/Atletas.jsx';
@@ -58,6 +59,11 @@ export const rotas = [
     ],
   },
   // Só no ambiente de desenvolvimento; em produção cai na 404.
-  ...(import.meta.env.DEV ? [{ path: 'dev/status', Component: Status }] : []),
+  ...(import.meta.env.DEV
+    ? [
+        { path: 'dev/status', Component: Status },
+        { path: 'dev/componentes', Component: CatalogoDeComponentes },
+      ]
+    : []),
   { path: '*', Component: NaoEncontrada },
 ];
