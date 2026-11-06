@@ -39,6 +39,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Canal das linhas de requisição
+    |--------------------------------------------------------------------------
+    |
+    | Canal em que o middleware RegistrarRequisicao grava uma linha JSON por
+    | requisição (rota, status, duração, usuário e request_id): é a fonte da
+    | latência e da taxa de erros por rota. Em produção, aponte para stderr.
+    |
+    */
+
+    'requisicoes' => env('LOG_REQUISICOES_CHANNEL', 'requisicoes'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Log Channels
     |--------------------------------------------------------------------------
     |
@@ -70,6 +83,15 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => env('LOG_DAILY_DAYS', 14),
+            'formatter' => JsonFormatter::class,
+            'replace_placeholders' => true,
+        ],
+
+        'requisicoes' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/requisicoes.log'),
+            'level' => 'info',
             'max_files' => env('LOG_DAILY_DAYS', 14),
             'formatter' => JsonFormatter::class,
             'replace_placeholders' => true,

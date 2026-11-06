@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CabecalhosSeguranca;
+use App\Http\Middleware\RegistrarRequisicao;
 use App\Http\Middleware\RequestId;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api/v1',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->prepend([RequestId::class, CabecalhosSeguranca::class]);
+        $middleware->prepend([RequestId::class, RegistrarRequisicao::class, CabecalhosSeguranca::class]);
 
         $middleware->statefulApi();
     })
