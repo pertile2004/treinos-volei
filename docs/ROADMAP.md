@@ -17,7 +17,7 @@ Regras:
 | 05 | Entrar, sair e rotas protegidas | Integrante 6 | 04 | não | ☐ | |
 | 06 | Recuperação de senha | Integrante 1 | 05 | não | ☐ | |
 | 07 | Perfil e configurações | Integrante 2 | 05 | não | ☐ | |
-| 08 | Biblioteca de exercícios | Integrante 3 | 05 | não | ✅ | |
+| 08 | Biblioteca de exercícios | Integrante 3 | 05 | não | ✅ | [#12](https://github.com/pertile2004/treinos-volei/pull/12) |
 | 09 | Exercícios: cadastro (admin) | Integrante 4 | 08 | não | ☐ | |
 | 10 | Exercícios: alteração (admin) | Integrante 5 | 09 | não | ☐ | |
 | 11 | Exercícios: exclusão (admin) | Integrante 6 | 10 | não | ☐ | |
