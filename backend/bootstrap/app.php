@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         // Toda resposta de erro em JSON sai no formato padrão da API:
-        // message e request_id (e errors em 422), sem detalhes internos fora do modo debug.
+        // message e request_id (e errors em 422), sem detalhes internos fora do ambiente local com debug.
         $exceptions->respond(function (Response $response, Throwable $e, Request $request): Response {
             if (! $response instanceof JsonResponse) {
                 return $response;
@@ -58,7 +58,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             $corpo['request_id'] = Context::get('request_id');
 
-            if (config('app.debug') === true) {
+            if (app()->isLocal() && config('app.debug') === true) {
                 $corpo += array_intersect_key($original, array_flip(['exception', 'file', 'line', 'trace']));
             }
 
