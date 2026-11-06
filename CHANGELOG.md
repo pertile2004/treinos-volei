@@ -11,6 +11,8 @@ Formato Keep a Changelog, em português. Versões em SemVer.
 - Scripts `npm run dev:web` e `npm run teste:web` na raiz e job `frontend` no CI (lint, testes com cobertura, build e auditoria das dependências).
 - Design system (PR-03): tokens finais no tema do Tailwind (borda de controle, fonte do sistema, tamanhos de destaque e de cronômetro) e os componentes Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas, Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao, acessíveis e testados com axe.
 - Catálogo /dev/componentes (só em desenvolvimento), com todos os componentes em todos os estados, e tabela de contraste no docs/DESIGN.md.
+- Evolução (PR-19): GET /api/v1/estatisticas (periodo semana, mes, 3meses ou ano) com volume por balde, percentual de acerto por fundamento (null sem tentativas) e frequência da semana contra a meta, calculado em America/Sao_Paulo; tela /evolucao com abas, gráfico de linha (recharts 3.10.1), barras por fundamento com "sem dados", cartão de frequência, "Ver como tabela" e estados carregando, erro, 401 e vazio; DemoSeeder (local, demo e testing, senha em DEMO_SENHA) com o Guto, admin, treinadora com dois atletas e treinos públicos; Playwright fluxo 4 (arquivo; execução na entrega).
+- Camada de dados dos cards 04, 08, 12 e 16 (migrations, models e factories de users, exercicios, treinos, treino_itens, sessoes e sessao_series) e acesso à API de exercícios e treinos no front, adiantados para este PR.
 ### Alterado
 - AppShell usa os componentes do design system: barra de navegação inferior abaixo de 1024 px e barra lateral a partir daí, com ícones.
 - Transições e animações são desligadas para quem pede menos movimento no sistema.

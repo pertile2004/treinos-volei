@@ -39,6 +39,8 @@ O Vite encaminha /api, /sanctum e /docs para a API em http://127.0.0.1:8000. Sem
 
 O catálogo do design system fica em http://localhost:5173/dev/componentes (só em desenvolvimento): todos os componentes de frontend/src/componentes/ em todos os estados. Os tokens e a tabela de contraste estão no docs/DESIGN.md.
 
+Dados de demonstração (só local e demo): defina `DEMO_SENHA` no backend/.env e rode `php backend/artisan db:seed --class=DemoSeeder`. Cria o jogador guto@example.com com três meses de sessões, um admin, uma treinadora com dois atletas e treinos públicos, todos com essa senha; pode rodar de novo sem duplicar. A evolução fica em http://localhost:5173/evolucao (a tela pede login, que chega no PR-05).
+
 Testes e qualidade:
 - `npm run verificar` — tudo que o CI roda (documentação, autoria, lint, análise e testes do backend, lint, testes e build do front).
 - `npm run teste:api` — testes do backend (usa o banco `volleypro_teste`). Se o npm não encontrar o Composer no Windows, rode `composer --working-dir=backend test`.

@@ -25,7 +25,16 @@ id · usuario_id → users (cascata) · treino_id → treinos (cascata) · data 
 ## Tabelas do framework
 password_reset_tokens, sessions, cache, jobs, personal_access_tokens (Sanctum) e pulse_* (PR-28).
 
-Criadas no PR-01 pelas migrations padrão do Laravel 13 e do Sanctum, sem alteração: users (ainda só com as colunas do framework: id, name, email, email_verified_at, password, remember_token e timestamps; o PR-04 adapta para o modelo acima), password_reset_tokens, sessions, cache, cache_locks, jobs, job_batches, failed_jobs, personal_access_tokens e migrations.
+Criadas no PR-01 pelas migrations padrão do Laravel 13 e do Sanctum, sem alteração: password_reset_tokens, sessions, cache, cache_locks, jobs, job_batches, failed_jobs, personal_access_tokens e migrations.
 
 ## Relacionamentos
 users 1–N treinos, sessoes e agendamentos · users (treinador) 1–N users (atletas) · treinos 1–N treino_itens, sessoes e agendamentos · exercicios 1–N treino_itens e sessao_series · sessoes 1–N sessao_series.
+
+## Migrations entregues com o PR-19 (camada de dados dos cards 04, 08, 12 e 16)
+`alterar_users_para_o_dominio` (name → nome, papel, meta_semanal, data_nascimento, codigo_convite, treinador_id), `criar_extensao_unaccent`, `criar_tabela_exercicios`, `criar_tabela_treinos`, `criar_tabela_treino_itens`, `criar_tabela_sessoes` e `criar_tabela_sessao_series`, seguindo as tabelas acima. A tabela agendamentos chega no PR-21. Decisões onde o modelo era omisso (ADR-028):
+- `users.papel` sem padrão no banco (a migration preenche `jogador` nas linhas existentes e depois remove o padrão); sem CHECK em `meta_semanal` nem nos valores dos enums (a faixa fica no FormRequest).
+- `exercicios.video_url` e `imagem_url` varchar(255).
+- `treino_itens.exercicio_id` sem ação ao apagar (o banco barra a exclusão física de exercício usado em treino, RN-07); CHECK `treino_itens_repeticoes_ou_duracao_check` (repeticoes ou duracao_segundos preenchido; aceita os dois).
+- `sessao_series.exercicio_id` vira null se o exercício for apagado de vez; "índices sessao_id e fundamento" são dois índices simples.
+- Índice simples em toda FK que o modelo não lista: exercicios.criado_por, treino_itens.exercicio_id, sessoes.treino_id e sessao_series.exercicio_id.
+- O PR-19 não cria tabela, coluna nem índice: as estatísticas usam (usuario_id, iniciada_em) de sessoes e os índices de sessao_series.
