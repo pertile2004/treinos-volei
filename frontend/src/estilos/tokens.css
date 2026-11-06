@@ -1,0 +1,14 @@
+@theme {
+  --color-*: initial;
+  --color-fundo: #0e0e0e;
+  --color-superficie: #1a1a1a;
+  --color-superficie-elevada: #232323;
+  --color-borda: #2c2c2c;
+  --color-primaria: #d4ff00;
+  --color-sobre-primaria: #0e0e0e;
+  --color-texto: #ffffff;
+  --color-texto-secundario: #a3a3a3;
+  --color-perigo: #ff5a5f;
+  --radius-cartao: 1rem;
+  --radius-botao: 0.75rem;
+}
