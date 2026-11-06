@@ -2,35 +2,35 @@
 > Atualizado em todo PR pelo /encerrar. Mantenha curto (até ~80 linhas).
 
 ## Agora
-- Último PR concluído: PR-01 — Esqueleto do backend — Integrante 2 — 2026-11-06 (o PR-02 — Esqueleto base do frontend — Integrante 3 entrou na main no mesmo dia, antes dele).
-- O que entrou no PR-01: API Laravel 13 (PHP 8.4) em backend/ com PostgreSQL; GET /api/v1/saude e GET /api/v1/referencias; seis enums com rótulo em pt-BR; X-Request-Id em toda resposta e em cada linha do log JSON; erros de /api/* em JSON padrão; cabeçalhos de segurança; CORS só para a origem do front (FRONTEND_URL), com credenciais; mensagens de validação em pt_BR; Pest, Larastan nível 6, Pint, Scramble e Laravel Boost; docker-compose.yml (PostgreSQL 17 e Mailpit); `npm run dev:api` e `npm run teste:api`; job `backend` no CI. Ainda não há autenticação nem models de domínio.
-- O que já estava na main (PR-02): frontend/ com Vite 8, React 19, Tailwind 4, React Router e TanStack Query; src/lib/http.js (X-Request-Id, 419 repete uma vez, 401 manda para /entrar) e src/lib/erros.js; AppShell com a navegação (Início, Biblioteca, Treino, Evolução); as 23 telas da especificação só com o título, a 404 e a /dev/status (só em dev); os componentes Pagina, Carregando, MensagemDeErro e EstadoVazio; ESLint, Prettier e Vitest com Testing Library e MSW; scripts `dev:web` e `teste:web`; job `frontend` no CI.
-- Juntos: `npm run dev` prepara o banco (Docker e migrations) e sobe a API e o front com o concurrently; `npm run verificar` roda backend e frontend.
-- Próximo: PR-03 — Design system a partir do Figma — Integrante 4 (depende do PR-02 e das telas do Figma em docs/design/telas/). Depois, PR-04 — Cadastro, Termos e Privacidade — Integrante 5 (depende do PR-01 e do PR-03).
-- Como testar o que existe:
-  1. `npm run setup`, `npm ci`, `npm --prefix frontend ci` e `composer --working-dir=backend install`; copie backend/.env.example para backend/.env e rode `php backend/artisan key:generate`.
-  2. `npm run dev` (com Docker) ou, com PostgreSQL local, `php backend/artisan migrate`, `npm run dev:api` e `npm run dev:web`; abra http://127.0.0.1:8000/api/v1/saude, /api/v1/referencias e http://localhost:5173/dev/status.
-  3. `npm run verificar`.
+- Último PR concluído: PR-16 — Modo treino ativo e salvar sessão — Integrante 5 — 2026-11-06 (frente D: sessões; os cards 04–15, 19, 21, 26 e 28 são feitos em paralelo por outras frentes a partir da mesma base).
+- O que entrou (backend): POST /sessoes e GET /sessoes/{id} (auth:sanctum + throttle:api 60/min por usuário), RegistrarSessaoRequest, SessaoService::registrar (idempotente por id_cliente, 404 para treino não visível, 422 para exercício fora do treino, DB::transaction sessão + séries, fundamento copiado do exercício), SessaoPolicy (404, nunca 403), SessaoResource e SessaoSerieResource; 24 testes Pest em tests/Feature/Sessoes/. As tabelas sessoes e sessao_series, models e factories vieram na semente 1d8f8bc (docs/MODELO-DE-DADOS.md).
+- O que entrou (frontend): funcionalidades/sessoes (registrarSessao, buscarSessao, useSessao, useRegistrarSessao), funcionalidades/treino-ativo (máquina de estados pura, localStorage versionado, montagem do POST, useTreinoAtivo, componentes das fases), páginas /treinar/:treinoId e /treino (retomar ou descartar, lista "Meus treinos" com paginação, "Treino salvo."), lib/formatos.js e e2e/fluxo-3-treino-ativo.spec.js (Playwright, ainda não executável nesta branch).
+- Como testar:
+  1. `composer --working-dir=backend test -- tests/Feature/Sessoes` (24 testes: transação, idempotência, 404 para treino privado alheio, selo de exercício removido, 429).
+  2. `npm --prefix frontend run test -- --run src/funcionalidades/treino-ativo src/funcionalidades/sessoes src/paginas` (máquina com timers falsos, recarga restaura o estado, reenvio com o mesmo id_cliente, axe em cada fase).
+  3. `npm run verificar` (191 testes do backend e 535 do front, lint, análise e build). Com a API e um treino com itens: abra /treino, "Iniciar treino", marque acertos e erros, recarregue a página no meio e finalize.
+- Próximo nesta frente: PR-17 — Registro rápido "Já treinei" — Integrante 6 (depende do PR-16). No roteiro geral, PR-04 é o próximo da sequência e está em outra frente.
 
 ## Em andamento
-- (nada)
+- (nenhum nesta frente)
 
 ## Pendências
 - [ ] PENDENTE: o grupo vai enviar nomes, usuários do GitHub e e-mails → preencher docs/INTEGRANTES.md.
-- [ ] Dono do repositório: proteger a main (checks `governanca`, `frontend` e `backend` obrigatórios, incluindo administradores) e adicionar os colaboradores.
-- [ ] Antes do PR-03: exportar as 6 telas do Figma em PNG 2x para docs/design/telas/.
-- [ ] PR-01, não conferido na máquina onde foi feito (sem Docker): o docker-compose.yml, o script de init do banco de teste e o caminho completo do `npm run dev` (Docker, migrations, API e front juntos). Quem tiver Docker: rode `npm run dev` e confira /up e /api/v1/saude em http://127.0.0.1:8000 e a /dev/status em http://localhost:5173.
-- [ ] PR-01: o job `backend` do CI (com cobertura por pcov) só roda no GitHub, depois do push; confira que ficou verde antes do merge.
-- [ ] PR-01: o grupo precisa confirmar os valores do enum Nivel (iniciante, intermediario, avancado), que a especificação não lista (ADR-021).
-- [ ] PR-01: backend/AGENTS.md é o arquivo que vem no esqueleto do Laravel (o Boost foi instalado só para o Claude Code e não o reescreveu); ele manda instalar o PHP por script remoto e rodar o boost:install de novo. O grupo decide se remove.
-- [ ] PR-01: `npm run teste:api` precisa do `composer` visível para o cmd do Windows (composer.bat). Se o npm não achar o Composer, use `composer --working-dir=backend test` ou `npm run verificar`.
-- [ ] PR-01: a falha real do banco na rota de saúde (VerificadorBancoPdo) só tem evidência manual (503 com a API apontada para uma porta fechada); o teste automatizado troca a implementação.
-- [ ] PR-01 (revisão): não há rate limit na API. Não entrou no /saude porque o throttle usa o cache, que fica no banco (CACHE_STORE=database), e derrubaria a rota junto com o banco. Definir no PR-04/PR-05 (login) o throttle das rotas e o armazenamento do contador.
-- [ ] PR-01 (revisão): no deploy, definir LOG_CHANNEL=stderr, APP_DEBUG=false, SESSION_SECURE_COOKIE=true, FRONTEND_URL com a origem real e configurar trustProxies se houver proxy terminando o TLS.
-- [ ] Depois do merge do PR-01: abrir /dev/status com a API real e conferir o formato de /api/v1/saude (a página aceita os campos na raiz ou dentro de `data`). No PR-02 isso foi conferido só com MSW e com o proxy respondendo 502 sem a API.
-- [ ] PR-03: conferir no navegador o AppShell (navegação fixa embaixo, coluna lateral a partir de 1024 px e o link "Pular para o conteúdo"). No PR-02 o layout foi conferido só por testes de componente, sem abrir o navegador.
-- [ ] `npm audit` do frontend acusa 6 vulnerabilidades moderadas (minimatch, pela cadeia do eslint 10, só desenvolvimento). Não barra o CI (nível high); rever quando o eslint publicar a correção (ADR-016).
+- [ ] Dono do repositório: proteger a main (checks `governanca`, `frontend` e `backend` obrigatórios) e adicionar os colaboradores.
+- [ ] PR-16: Playwright fluxo 3 (frontend/e2e/fluxo-3-treino-ativo.spec.js) escrito mas não executado: não há playwright.config.js nem @playwright/test e @axe-core/playwright nesta branch (infraestrutura do PR-05) e ele depende de POST /auth/cadastro (PR-04), GET /exercicios (PR-08) e POST /treinos (PR-12). Rodar na entrega, depois dos merges.
+- [ ] PR-16: encaixe ponta a ponta do front com a API real (POST/GET /sessoes e o formato de GET /treinos/{id} do PR-13 em `criarEstadoInicial`) conferido só com MSW e os corpos do contrato; abrir /treinar/:id com a API no ar depois do merge do PR-13. Layout conferido só no jsdom (sem navegador real).
+- [ ] PR-16: botão "Iniciar treino" no detalhe do treino (/treinos/:id) não foi feito: a tela é do PR-13 (outra frente). Entrada hoje é a página /treino. Acrescentar o botão (`Botao para={`/treinar/${id}`}`) no PR-13 ou no merge.
+- [ ] PR-16: visibilidade do treino em POST /sessoes está em SessaoService::podeVer (autor, público, atletas do autor); quando a TreinoPolicy do PR-13 chegar, trocar pela Policy. Admin não tem visão especial sobre treinos alheios (RN-06); mudar se o PR-13 decidir diferente.
+- [ ] PR-16: chave do localStorage usa o segmento fixo `local` (USUARIO_DO_ARMAZENAMENTO em treino-ativo/navegador.js) porque não há login no front nesta frente; o PR-05 troca pelo id do usuário logado.
+- [ ] PR-16: corrida real de dois POST simultâneos com o mesmo id_cliente não exercitada (impossível em teste HTTP sequencial); a captura de UniqueConstraintViolationException está implementada e a pré-checagem tem teste.
+- [ ] PR-16, decisões da lógica adiantada sem regra nos docs: `montarSessao` renumera `numero` por exercicio_id; teto de 10 séries por exercício e 600 s de descanso restante; ajuste de repetições vale para as séries seguintes; descanso vencido com a página fechada reinicia a série no instante da volta; treino com mais de 200 séries não é cortado (o POST recusa). id_cliente nulo e `registro_rapido` ficam para o PR-17.
+- [ ] PR-16: o limitador `api` (AppServiceProvider) usa o cache (CACHE_STORE=database); /saude continua fora do throttle. O PR-05 decide o throttle das rotas de login e o armazenamento do contador. A pasta temporária do PHPStan é compartilhada entre frentes e pode dar "Acesso negado" quando duas rodam juntas; TMP/TEMP exclusivos resolvem.
+- [ ] PR-03: exportar as 6 telas do Figma em PNG 2x para docs/design/telas/ e comparar com /dev/componentes; conferir leitor de tela real, área segura do iPhone na NavInferior e o AppShell no navegador (ADR-022).
+- [ ] PR-01: Docker (`npm run dev` completo), job `backend` do CI, enum Nivel a confirmar (ADR-021), backend/AGENTS.md do esqueleto, composer.bat para `npm run teste:api`, falha real do banco em /saude só com evidência manual, e no deploy LOG_CHANNEL=stderr, APP_DEBUG=false, SESSION_SECURE_COOKIE=true, FRONTEND_URL e trustProxies.
+- [ ] Backend e frontend juntos: /dev/status com a API real. `npm audit` do frontend acusa 6 vulnerabilidades moderadas (minimatch, cadeia do eslint 10); não barra o CI (ADR-016).
 
 ## Ideias para depois
-- No card de seeders: não criar o usuário de exemplo (test@example.com, senha da factory) em produção.
-- Separar o log dos testes do log diário de desenvolvimento (hoje os testes escrevem em backend/storage/logs).
+- Treino ativo: Wake Lock para a tela não apagar, som no fim do descanso, "Iniciar treino" direto da home, voltar de fase.
+- Componentes fora da lista do PR-03: Select, Toast e Tabela. Etiqueta com cor por fundamento e por etapa, quando o Figma definir a paleta.
+- Abas: duas na mesma tela com itens de mesmo `id` repetem os ids; se precisar, acrescentar um prefixo por grupo.
+- No card de seeders: não criar o usuário de exemplo em produção. Separar o log dos testes do log diário de desenvolvimento.

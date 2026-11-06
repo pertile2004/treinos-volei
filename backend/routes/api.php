@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\ReferenciasController;
 use App\Http\Controllers\Api\V1\SaudeController;
+use App\Http\Controllers\Api\V1\SessaoController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
@@ -11,3 +12,10 @@ Route::get('/saude', SaudeController::class)
     ->withoutMiddleware(EnsureFrontendRequestsAreStateful::class)
     ->name('saude');
 Route::get('/referencias', ReferenciasController::class)->name('referencias');
+
+// Rotas que exigem usuário logado. O limite "api" (60 por minuto por usuário)
+// está definido no AppServiceProvider.
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
+    Route::post('/sessoes', [SessaoController::class, 'store'])->name('sessoes.store');
+    Route::get('/sessoes/{sessao}', [SessaoController::class, 'show'])->name('sessoes.show');
+});

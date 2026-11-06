@@ -14,10 +14,10 @@ id · nome varchar(120) · descricao text null · nivel varchar(20) · visibilid
 id · treino_id → treinos (cascata) · exercicio_id → exercicios · etapa varchar(20) · ordem smallint · series smallint · repeticoes smallint null · duracao_segundos int null · descanso_segundos smallint. Único: (treino_id, etapa, ordem). Regra: repeticoes ou duracao_segundos precisa estar preenchido.
 
 ## sessoes
-id · usuario_id → users (cascata) · treino_id → treinos null (vira null se apagado) · origem varchar(20): cronometro ou registro_rapido · iniciada_em timestamptz · finalizada_em timestamptz · duracao_segundos int · observacao text null · id_cliente uuid null único (idempotência offline) · timestamps. Índice: (usuario_id, iniciada_em).
+id · usuario_id → users (cascata) · treino_id → treinos null (vira null se apagado) · origem varchar(20): cronometro ou registro_rapido · iniciada_em timestamptz · finalizada_em timestamptz · duracao_segundos int · observacao text null · id_cliente uuid null único (idempotência: o reenvio com o mesmo id devolve a mesma sessão) · timestamps. Índices: (usuario_id, iniciada_em), que também serve à FK usuario_id, e treino_id. Criada no PR-16 (migration 2026_11_06_201600_criar_tabela_sessoes); iniciada_em e finalizada_em são timestamptz gravados em UTC (o model usa o formato `Y-m-d H:i:sP`). A relação `treino` inclui o treino excluído logicamente (RN-08).
 
 ## sessao_series
-id · sessao_id → sessoes (cascata) · exercicio_id → exercicios null · fundamento varchar(20) · numero smallint · repeticoes smallint null · acertos smallint padrão 0 · erros smallint padrão 0 · duracao_segundos int null. Índices: sessao_id e fundamento.
+id · sessao_id → sessoes (cascata) · exercicio_id → exercicios null · fundamento varchar(20) · numero smallint · repeticoes smallint null · acertos smallint padrão 0 · erros smallint padrão 0 · duracao_segundos int null. Sem timestamps. Índices: sessao_id, exercicio_id e fundamento. Criada no PR-16 (migration 2026_11_06_201601_criar_tabela_sessao_series). O fundamento é copiado do exercício no registro, então as estatísticas não dependem de o exercício ainda existir; a relação `exercicio` inclui o excluído da biblioteca (RN-07). O POST /sessoes recusa o par (exercicio_id, numero) repetido na mesma sessão (regra de validação, sem índice único no banco).
 
 ## agendamentos
 id · usuario_id → users (cascata) · treino_id → treinos (cascata) · data date · hora time null · sessao_id → sessoes null · timestamps. Índice: (usuario_id, data).

@@ -12,7 +12,7 @@ Regras:
 | 00 | Fundação do repositório | Integrante 1 | — | não | ✅ | [#1](https://github.com/pertile2004/treinos-volei/pull/1) |
 | 01 | Esqueleto do backend | Integrante 2 | 00 | não | ✅ | [#3](https://github.com/pertile2004/treinos-volei/pull/3) |
 | 02 | Esqueleto base do frontend | Integrante 3 | 00 | não | ✅ | [#2](https://github.com/pertile2004/treinos-volei/pull/2) |
-| 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ☐ | |
+| 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ✅ | |
 | 04 | Cadastro, Termos e Privacidade | Integrante 5 | 01, 03 | não | ☐ | |
 | 05 | Entrar, sair e rotas protegidas | Integrante 6 | 04 | não | ☐ | |
 | 06 | Recuperação de senha | Integrante 1 | 05 | não | ☐ | |
@@ -25,7 +25,7 @@ Regras:
 | 13 | Treinos: Meus Treinos e detalhe | Integrante 2 | 12 | não | ☐ | |
 | 14 | Treinos: alteração | Integrante 3 | 13 | não | ☐ | |
 | 15 | Treinos: exclusão | Integrante 4 | 14 | não | ☐ | |
-| 16 | Modo treino ativo e salvar sessão | Integrante 5 | 13 | não | ☐ | |
+| 16 | Modo treino ativo e salvar sessão | Integrante 5 | 13 | não | ✅ | [#6](https://github.com/pertile2004/treinos-volei/pull/6) |
 | 17 | Registro rápido "Já treinei" | Integrante 6 | 16 | não | ☐ | |
 | 18 | Histórico de treinos | Integrante 1 | 16 | não | ☐ | |
 | 19 | Evolução: estatísticas e gráficos | Integrante 2 | 18 | não | ☐ | |
