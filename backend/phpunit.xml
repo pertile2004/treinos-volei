@@ -25,6 +25,8 @@
         <env name="CACHE_STORE" value="array"/>
         <env name="DB_CONNECTION" value="pgsql"/>
         <env name="DB_DATABASE" value="volleypro_teste"/>
+        <env name="DEMO_SENHA" value="senha-demo-de-teste"/>
+        <env name="DEMO_SENHA_ADMIN" value="senha-admin-de-teste"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

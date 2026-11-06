@@ -10,20 +10,20 @@ A coluna "Onde" recebe os caminhos dos arquivos conforme os PRs entregam.
 | ISP | Interfaces pequenas e específicas (ex.: GeradorDeCodigoConvite) | backend/app/Contracts/VerificadorBanco.php |
 | DIP | Injeção pelo construtor via container do Laravel | backend/app/Services/SaudeService.php, backend/app/Providers/AppServiceProvider.php |
 | KISS e YAGNI | Escopo fechado por PR; sem abstração especulativa (ADR-002) | CLAUDE.md, docs/ROADMAP.md |
-| DRY | Enums únicos no backend, expostos em /referencias para o front | backend/app/Enums, backend/app/Services/ReferenciasService.php |
-| Nomenclatura expressiva | Português claro, sem abreviações; Pint e ESLint | backend/pint.json |
+| DRY | Enums únicos no backend, expostos em /referencias para o front; tokens e componentes únicos no design system | backend/app/Enums, backend/app/Services/ReferenciasService.php, frontend/src/estilos/tokens.css, frontend/src/componentes/ |
+| Nomenclatura expressiva | Português claro, sem abreviações; Pint e ESLint | backend/pint.json, frontend/src/componentes/ (componentes e props em português) |
 | Funções pequenas | Revisão em todo PR e análise estática | |
 | Tratamento de erros | Handler central com JSON padrão e request_id; nada de catch silencioso | backend/bootstrap/app.php, backend/tests/Feature/ErrosJsonTest.php |
 | ORM | Eloquent | |
 | Migrations | Todo o schema versionado; migration mergeada nunca é editada | |
-| Transações | DB::transaction nos services que gravam várias tabelas | |
-| N+1 e índices | Modo estrito (lazy loading vira erro), eager loading e índices do MODELO-DE-DADOS | backend/app/Providers/AppServiceProvider.php |
-| Validação de entradas | FormRequests no servidor; Zod no front | |
+| Transações | DB::transaction nos services que gravam várias tabelas | backend/database/seeders/DemoSeeder.php |
+| N+1 e índices | Modo estrito (lazy loading vira erro), eager loading e índices do MODELO-DE-DADOS | backend/app/Providers/AppServiceProvider.php, backend/app/Services/EstatisticasService.php (três consultas agregadas com o Query Builder) |
+| Validação de entradas | FormRequests no servidor; Zod no front | backend/app/Http/Requests/EstatisticasRequest.php |
 | Gestão de segredos | .env fora do Git, variáveis no Render e no GitHub, gitleaks no CI | .gitignore, backend/.env.example, .github/workflows/ci.yml |
 | Autenticação e autorização (RBAC) | Sanctum SPA (ADR-003), papéis + Policies, menor privilégio | |
 | OWASP Top 10 | Checklist A01–A10 no PR-29 e revisor de segurança | |
 | Injeção de dependência e mocks | Construtor; testes substituem implementações de fronteira | backend/tests/Feature/SaudeTest.php |
-| Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | backend/tests, frontend/src/**/*.test.{js,jsx}, frontend/src/testes/ |
+| Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | backend/tests, frontend/src/**/*.test.{js,jsx}, frontend/src/testes/, frontend/e2e/ |
 | Análise estática | Larastan, Pint, ESLint; SonarQube Cloud opcional (PR-28) | backend/phpstan.neon, backend/pint.json, frontend/eslint.config.js, frontend/.prettierrc.json |
 | Versionamento e code review | GitHub Flow, um PR por funcionalidade, revisão em todo PR (ADR-007) | |
 | CI/CD | GitHub Actions e deploy automático no Render | .github/workflows/ci.yml (jobs governanca, frontend e backend) |

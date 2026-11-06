@@ -76,3 +76,24 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 
 ### Cabeçalhos de segurança (todas as respostas)
 `X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+
+## PR-19 — estatísticas
+
+### GET /estatisticas — logado (`auth:sanctum`), sempre do próprio usuário
+- Query: `periodo` obrigatório, um de `semana`, `mes`, `3meses`, `ano`.
+- Janelas (America/Sao_Paulo, semana na segunda, `fim` inclusivo): semana = segunda a domingo da semana atual (7 pontos por dia); mes = semana atual + 3 anteriores (4 pontos por semana); 3meses = semana atual + 12 anteriores (13 pontos por semana); ano = mês atual + 11 anteriores (12 pontos por mês).
+- 200:
+```json
+{ "data": {
+  "periodo": "semana", "fuso": "America/Sao_Paulo", "inicio": "2026-11-02", "fim": "2026-11-08",
+  "volume": { "granularidade": "dia", "total_minutos": 105,
+    "pontos": [ { "inicio": "2026-11-02", "minutos": 45 }, { "inicio": "2026-11-03", "minutos": 0 }, "..." ] },
+  "desempenho": [ { "fundamento": "recepcao", "acertos": 42, "erros": 18, "tentativas": 60, "percentual": 70.0 },
+    { "fundamento": "levantamento", "acertos": 0, "erros": 0, "tentativas": 0, "percentual": null }, "..." ],
+  "frequencia": { "semana_inicio": "2026-11-02", "semana_fim": "2026-11-08", "dias_treinados": 2, "meta": 3, "datas": ["2026-11-02", "2026-11-04"] }
+} }
+```
+- `granularidade`: `dia`, `semana` ou `mes`. `pontos` sempre completo e crescente; `inicio` é a data local do primeiro dia do balde; balde sem sessão tem `minutos: 0`. `minutos` = arredondamento de segundos/60 por balde; `total_minutos` = soma dos baldes.
+- `desempenho`: todos os fundamentos, na ordem de GET /referencias. `tentativas = acertos + erros`; `percentual` com 1 casa decimal (`70.0`, `0.0`) ou `null` quando não há tentativas (nunca 0 no lugar de null).
+- `frequencia`: sempre a semana atual, qualquer que seja o `periodo`; `dias_treinados` = dias locais distintos com sessão; `meta` = users.meta_semanal; `datas` = esses dias (AAAA-MM-DD).
+- 401 sem sessão · 422 `periodo` ausente ou inválido: `{ "message": "Informe um período válido: semana, mes, 3meses ou ano.", "errors": { "periodo": ["..."] }, "request_id": "..." }`. Não há 403, 404 nem 429.
