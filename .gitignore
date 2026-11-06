@@ -1,0 +1,14 @@
+node_modules/
+.env
+backend/vendor/
+backend/.env
+backend/.env.production
+frontend/dist/
+coverage/
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+.phpunit.cache/
+.claude/settings.local.json
+.DS_Store
+Thumbs.db
