@@ -76,3 +76,37 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 
 ### Cabeçalhos de segurança (todas as respostas)
 `X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+
+## PR-12 — treinos: cadastro
+
+### POST /treinos — logado (qualquer papel), nome `treinos.criar`
+Requisição (JSON). `autor_id` e `duracao_estimada_minutos` nunca vêm do cliente (são ignorados).
+
+| Campo | Regras |
+|-------|--------|
+| nome | obrigatório, texto, máx. 120 |
+| descricao | opcional (null), texto, máx. 2000 |
+| nivel | obrigatório: iniciante, intermediario ou avancado |
+| visibilidade | obrigatório, conforme o papel (RN-06): jogador só `privado`; treinador `privado` ou `atletas`; admin `privado`, `atletas` ou `publico` |
+| itens | obrigatório, array, 1 a 30 itens |
+| itens.*.exercicio_id | obrigatório, inteiro, exercício existente e não excluído |
+| itens.*.etapa | obrigatório: aquecimento, tecnica, especifico ou volta_a_calma |
+| itens.*.ordem | obrigatório, inteiro 1–32767; o par (etapa, ordem) não se repete no pedido |
+| itens.*.series | obrigatório, inteiro 1–10 |
+| itens.*.repeticoes | inteiro 1–100; obrigatório se `duracao_segundos` estiver ausente (os dois juntos são aceitos) |
+| itens.*.duracao_segundos | inteiro 10–3600; obrigatório se `repeticoes` estiver ausente |
+| itens.*.descanso_segundos | obrigatório, inteiro 0–600 |
+
+- 201: `{ "data": { "id", "nome", "descricao", "nivel", "visibilidade", "duracao_estimada_minutos", "autor": { "id", "nome" }, "itens": [ { "id", "etapa", "ordem", "series", "repeticoes", "duracao_segundos", "descanso_segundos", "exercicio": { "id", "nome", "fundamento", "removido" } } ], "criado_em": "2026-11-06T14:00:00Z" } }`
+  - `itens` sempre na ordem das etapas (aquecimento, tecnica, especifico, volta_a_calma) e, dentro delas, por `ordem`, independentemente da ordem de envio.
+  - `exercicio.removido` é true quando o exercício foi excluído da biblioteca depois (RN-07); na criação só exercícios ativos entram.
+  - `duracao_estimada_minutos` é calculada no servidor: por item, `series × (duracao_segundos, ou repeticoes × 3 s quando não há duração) + series × descanso_segundos`; soma arredondada para cima em minutos, mínimo 1.
+  - `criado_em` em ISO 8601 UTC sem fração. Não há `atualizado_em`.
+- 401 sem sessão. 403 e 404 não se aplicam.
+- 422 `{ "message", "errors", "request_id" }`. Mensagens fixas deste PR:
+  - `visibilidade` fora do papel ou inexistente: "A visibilidade escolhida não está disponível para o seu papel."
+  - `itens.N.exercicio_id` inexistente ou excluído: "O exercício escolhido não existe ou foi removido da biblioteca."
+  - item sem repetições nem duração: "Informe repetições ou duração em cada exercício." (em `itens.N.repeticoes` e `itens.N.duracao_segundos`)
+  - (etapa, ordem) repetido: "A ordem N já está em uso na etapa <Rótulo>." (em `itens.N.ordem` do item repetido)
+  - demais regras: mensagens do validador em pt-BR com os atributos descrição, nível, exercício, etapa, ordem, séries, repetições, duração e descanso (ex.: "O campo séries deve estar entre 1 e 10.").
+- A gravação de treino e itens é atômica: qualquer falha não grava nada.

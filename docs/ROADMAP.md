@@ -21,7 +21,7 @@ Regras:
 | 09 | Exercícios: cadastro (admin) | Integrante 4 | 08 | não | ☐ | |
 | 10 | Exercícios: alteração (admin) | Integrante 5 | 09 | não | ☐ | |
 | 11 | Exercícios: exclusão (admin) | Integrante 6 | 10 | não | ☐ | |
-| 12 | Treinos: cadastro | Integrante 1 | 08 | não | ☐ | |
+| 12 | Treinos: cadastro | Integrante 1 | 08 | não | ✅ | |
 | 13 | Treinos: Meus Treinos e detalhe | Integrante 2 | 12 | não | ☐ | |
 | 14 | Treinos: alteração | Integrante 3 | 13 | não | ☐ | |
 | 15 | Treinos: exclusão | Integrante 4 | 14 | não | ☐ | |
