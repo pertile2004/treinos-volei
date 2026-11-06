@@ -111,7 +111,7 @@ it('responde 422 em password quando a senha tem menos de 8 caracteres', function
 });
 
 it('responde 422 em password quando a confirmacao nao confere', function () {
-    $this->postJson('/api/v1/auth/cadastro', dadosDeCadastro(['password_confirmation' => 'outra-senha-123']))
+    $this->postJson('/api/v1/auth/cadastro', dadosDeCadastro(['password_confirmation' => 'senha-errada-errada']))
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['password' => 'As senhas não conferem.']);
 });
