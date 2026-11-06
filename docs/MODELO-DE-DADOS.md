@@ -25,5 +25,7 @@ id · usuario_id → users (cascata) · treino_id → treinos (cascata) · data 
 ## Tabelas do framework
 password_reset_tokens, sessions, cache, jobs, personal_access_tokens (Sanctum) e pulse_* (PR-28).
 
+Criadas no PR-01 pelas migrations padrão do Laravel 13 e do Sanctum, sem alteração: users (ainda só com as colunas do framework: id, name, email, email_verified_at, password, remember_token e timestamps; o PR-04 adapta para o modelo acima), password_reset_tokens, sessions, cache, cache_locks, jobs, job_batches, failed_jobs, personal_access_tokens e migrations.
+
 ## Relacionamentos
 users 1–N treinos, sessoes e agendamentos · users (treinador) 1–N users (atletas) · treinos 1–N treino_itens, sessoes e agendamentos · exercicios 1–N treino_itens e sessao_series · sessoes 1–N sessao_series.

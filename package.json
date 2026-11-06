@@ -7,9 +7,11 @@
   },
   "scripts": {
     "setup": "node scripts/setup.mjs",
-    "dev": "docker compose up -d && concurrently --kill-others-on-fail --names api,web \"php backend/artisan serve\" \"npm --prefix frontend run dev\"",
+    "dev": "node scripts/dev.mjs && concurrently --kill-others-on-fail --names api,web \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "node scripts/dev.mjs --api",
     "dev:web": "npm --prefix frontend run dev",
     "verificar": "node scripts/verificar.mjs",
+    "teste:api": "composer --working-dir=backend test",
     "teste:web": "npm --prefix frontend run test -- --run",
     "docs:verificar": "node scripts/verificar-docs.mjs",
     "autoria:verificar": "node scripts/verificar-autoria.mjs"

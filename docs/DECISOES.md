@@ -54,16 +54,28 @@ Cada decisão tem número, data, motivo e consequência. Nova decisão vai no fi
 - ADR-017 (2026-11-06) Portas do front e da API configuráveis por variável de ambiente; /dev/status só em desenvolvimento.
   - Motivo: os testes E2E (PR-05) e os cards feitos em paralelo na mesma máquina precisam de portas próprias; a página de status é ferramenta de desenvolvimento e não é uma tela do produto.
   - Consequência: o frontend/vite.config.js lê E2E_API_PORT (alvo do proxy, padrão 8000) e E2E_WEB_PORT (porta do dev, padrão 5173, e do preview, padrão 4173), com strictPort: se a porta estiver ocupada o Vite falha em vez de trocar de porta. A rota /dev/status só entra na tabela quando `import.meta.env.DEV` é verdadeiro: no build de produção ela não existe e o endereço cai na 404.
-- ADR-018 (2026-11-06) Design system do PR-03 feito sem o Figma e sem as telas exportadas; fonte do sistema.
+- ADR-018 (2026-11-06) Dependências do backend com versão exata no backend/composer.json (PR-01): laravel/framework 13.40.0, laravel/sanctum 4.3.3, dedoc/scramble 0.13.53 e laravel/tinker 3.0.2; em desenvolvimento, pestphp/pest 4.7.8, pestphp/pest-plugin-laravel 4.1.0, larastan/larastan 3.14.0, laravel/pint 1.32.1, laravel/boost 2.10.4, fakerphp/faker 1.24.1 e mockery/mockery 1.6.15. O laravel/tinker entra na lista aprovada. Imagens do docker-compose.yml: postgres:17 e axllent/mailpit:v1.32.0.
+  - Motivo: build reproduzível, com o composer.lock versionado; o tinker vem no esqueleto oficial do Laravel e é o console que as diretrizes do Laravel Boost usam; as mensagens de validação em pt_BR foram traduzidas à mão em backend/lang/pt_BR (e lang/pt_BR.json) para não trazer um pacote de tradução de fora da lista.
+  - Consequência: atualizar uma versão é uma mudança explícita, com registro aqui; a tag do Mailpit é fixa e foi conferida no Docker Hub.
+- ADR-019 (2026-11-06) Laravel Boost instalado em backend/ só para o Claude Code, com `php artisan boost:install --guidelines --skills --mcp --no-interaction`, e Scramble com a configuração padrão do pacote.
+  - Motivo: o card pede os dois; a instalação sem interação roda igual em qualquer máquina e o padrão do Scramble já restringe /docs/api e /docs/api.json ao ambiente local.
+  - Consequência: os arquivos do Boost (boost.json, CLAUDE.md, .mcp.json e .claude/skills) ficam versionados em backend/ e o CLAUDE.md da raiz continua sendo a regra do projeto; o .mcp.json da raiz aponta para `php backend/artisan boost:mcp`; liberar a documentação da API para admin em produção fica para o PR que tratar disso.
+- ADR-020 (2026-11-06) Interface App\Contracts\VerificadorBanco (implementação VerificadorBancoPdo) na checagem de saúde.
+  - Motivo: o banco é fronteira externa e o teste do 503 precisa trocar a implementação sem derrubar o banco real.
+  - Consequência: o bind fica no AppServiceProvider; o caminho de falha real (PDO) é conferido à mão, apontando a API para uma porta fechada.
+- ADR-021 (2026-11-06) Valores do enum Nivel: iniciante, intermediario e avancado.
+  - Motivo: a especificação cita "nível" sem listar os valores; é a opção mais simples.
+  - Consequência: o grupo precisa confirmar; mudar depois exige ajustar os dados já gravados.
+- ADR-022 (2026-11-06) Design system do PR-03 feito sem o Figma e sem as telas exportadas; fonte do sistema.
   - Motivo: no dia da entrega não havia PNGs em docs/design/telas/ nem acesso ao Figma, e o card manda usar só os PNGs quando o Figma MCP está indisponível. Decisão do tech lead: implementar com os tokens do docs/DESIGN.md (tema escuro com verde-limão) e as descrições das telas, sem nenhuma chamada ao Figma. A fonte do Figma não foi confirmada, então não se carrega arquivo de fonte.
   - Consequência: o aceite "parecido com os PNGs" fica sem evidência e vira pendência no docs/ESTADO.md (comparar lado a lado quando as telas forem exportadas e ajustar os tokens se preciso). O orçamento de chamadas do ADR-012 continua intacto e docs/design/figma/ segue vazio. `--font-sans` é a pilha do sistema (`ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif`), sem pacote novo. A Etiqueta não tem cor por fundamento ou etapa, porque o DESIGN.md não define essa paleta.
-- ADR-019 (2026-11-06) vitest-axe 0.1.0 nos testes de componente.
+- ADR-023 (2026-11-06) vitest-axe 0.1.0 nos testes de componente.
   - Dependência do frontend, desenvolvimento: vitest-axe 0.1.0 (licença MIT, conferido com `npm view`; já estava na lista aprovada e usa o axe-core 4.14.0 que o eslint-plugin-jsx-a11y já trazia).
   - Motivo: o card pede axe sem violações em todos os componentes.
   - Consequência: nessa versão o `vitest-axe/extend-expect` vem vazio; o matcher `toHaveNoViolations` é registrado em frontend/src/testes/preparar.js com `expect.extend` a partir de `vitest-axe/matchers`. No jsdom o axe não mede contraste nem layout (e avisa de `HTMLCanvasElement.getContext`, que é ruído): contraste fica na tabela do docs/DESIGN.md e alvos são conferidos por classe.
-- ADR-020 (2026-11-06) Token `borda-controle` (#757575) para o contorno dos controles.
+- ADR-024 (2026-11-06) Token `borda-controle` (#757575) para o contorno dos controles.
   - Motivo: a `borda` (#2C2C2C) dá 1,38:1 sobre o fundo e não serve como único indicador de um campo, chip, stepper ou botão secundário (WCAG 1.4.11 pede 3:1).
   - Consequência: `borda-controle` dá 4,18, 3,77 e 3,41 sobre fundo, superfície e superfície elevada; a `borda` fica só para divisórias e borda de cartão. Também entraram `--text-destaque` (32 px) e `--text-cronometro` (56 a 64 px). O botão de perigo usa texto escuro, porque texto branco sobre `perigo` dá 3,05:1.
-- ADR-021 (2026-11-06) Só uma navegação principal montada por vez no AppShell.
+- ADR-025 (2026-11-06) Só uma navegação principal montada por vez no AppShell.
   - Motivo: NavInferior e BarraLateral têm o mesmo nome acessível ("Navegação principal"); as duas no DOM, uma escondida por CSS, duplicariam o landmark nos testes (o jsdom não aplica CSS) e dependeriam de `display: none` para não aparecer duas vezes ao leitor de tela.
   - Consequência: frontend/src/lib/useLarguraMinima.js (`useSyncExternalStore` sobre `matchMedia('(min-width: 1024px)')`) escolhe BarraLateral a partir de 1024 px e NavInferior abaixo disso; sem `matchMedia`, vale a NavInferior. O limite em px do hook e o `lg` do Tailwind (64rem) só coincidem com a fonte padrão de 16 px no navegador. Os ícones são SVG inline em cada arquivo (sem pasta nem biblioteca de ícones), por isso os quatro da navegação aparecem no AppShell.jsx e na seção do catálogo.

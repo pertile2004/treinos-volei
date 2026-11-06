@@ -5,7 +5,7 @@ Telas exportadas: docs/design/telas/ · Saídas do Figma MCP: docs/design/figma/
 
 ## Uso do Figma MCP
 Contas Starter ou com assento View/Collab têm só 6 chamadas por mês. O orçamento do projeto é de no máximo 5 chamadas, todas no PR-03, com os resultados salvos em docs/design/figma/. Nenhum outro PR chama o Figma.
-No PR-03 nenhuma chamada foi feita e não havia telas exportadas (ADR-018): o orçamento continua intacto e docs/design/figma/ e docs/design/telas/ seguem vazios.
+No PR-03 nenhuma chamada foi feita e não havia telas exportadas (ADR-022): o orçamento continua intacto e docs/design/figma/ e docs/design/telas/ seguem vazios.
 
 ## Tokens (finais do PR-03 — sem conferência com o Figma)
 Ficam em `frontend/src/estilos/tokens.css`, dentro do `@theme` do Tailwind 4. O PR-03 não teve acesso ao Figma nem às telas exportadas: os valores abaixo são os deste documento, e a comparação lado a lado continua pendente (ver docs/ESTADO.md > Pendências).

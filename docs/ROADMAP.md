@@ -10,8 +10,8 @@ Regras:
 | PR | Título | Responsável | Depende de | Cortável | Status | Link |
 |----|--------|-------------|------------|----------|--------|------|
 | 00 | Fundação do repositório | Integrante 1 | — | não | ✅ | [#1](https://github.com/pertile2004/treinos-volei/pull/1) |
-| 01 | Esqueleto do backend | Integrante 2 | 00 | não | ☐ | |
-| 02 | Esqueleto base do frontend | Integrante 3 | 00 | não | ✅ | |
+| 01 | Esqueleto do backend | Integrante 2 | 00 | não | ✅ | [#3](https://github.com/pertile2004/treinos-volei/pull/3) |
+| 02 | Esqueleto base do frontend | Integrante 3 | 00 | não | ✅ | [#2](https://github.com/pertile2004/treinos-volei/pull/2) |
 | 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ✅ | |
 | 04 | Cadastro, Termos e Privacidade | Integrante 5 | 01, 03 | não | ☐ | |
 | 05 | Entrar, sair e rotas protegidas | Integrante 6 | 04 | não | ☐ | |
