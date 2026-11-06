@@ -112,3 +112,20 @@ it('resume em portugues quando ha mais de um erro de validacao', function () {
         ->assertJsonPath('message', 'O campo nome é obrigatório. (e mais 1 erro)')
         ->assertJsonValidationErrors(['email' => 'O campo email deve ser um endereço de e-mail válido.']);
 });
+
+it('nao expoe detalhes internos fora do ambiente local mesmo com o debug ligado', function () {
+    config(['app.debug' => true]);
+    $this->app->detectEnvironment(fn () => 'production');
+
+    Route::get('/api/v1/teste-de-erro-debug', function () {
+        throw new RuntimeException('detalhe interno que nao pode vazar');
+    });
+
+    $resposta = $this->get('/api/v1/teste-de-erro-debug');
+
+    $resposta->assertStatus(500)
+        ->assertExactJson([
+            'message' => 'Erro interno do servidor.',
+            'request_id' => $resposta->headers->get('X-Request-Id'),
+        ]);
+});
