@@ -23,11 +23,11 @@ A coluna "Onde" recebe os caminhos dos arquivos conforme os PRs entregam.
 | Autenticação e autorização (RBAC) | Sanctum SPA (ADR-003), papéis + Policies, menor privilégio | |
 | OWASP Top 10 | Checklist A01–A10 no PR-29 e revisor de segurança | |
 | Injeção de dependência e mocks | Construtor; testes substituem implementações de fronteira | backend/tests/Feature/SaudeTest.php |
-| Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | backend/tests |
-| Análise estática | Larastan, Pint, ESLint; SonarQube Cloud opcional (PR-28) | backend/phpstan.neon, backend/pint.json |
+| Pirâmide de testes | Pest (unidade e integração), Vitest, Playwright | backend/tests, frontend/src/**/*.test.{js,jsx}, frontend/src/testes/ |
+| Análise estática | Larastan, Pint, ESLint; SonarQube Cloud opcional (PR-28) | backend/phpstan.neon, backend/pint.json, frontend/eslint.config.js, frontend/.prettierrc.json |
 | Versionamento e code review | GitHub Flow, um PR por funcionalidade, revisão em todo PR (ADR-007) | |
-| CI/CD | GitHub Actions e deploy automático no Render | .github/workflows/ci.yml |
+| CI/CD | GitHub Actions e deploy automático no Render | .github/workflows/ci.yml (jobs governanca, frontend e backend) |
 | Logs estruturados | JSON com request_id e usuário | backend/config/logging.php |
-| Correlation IDs | X-Request-Id do front até o log | backend/app/Http/Middleware/RequestId.php |
+| Correlation IDs | X-Request-Id do front até o log | backend/app/Http/Middleware/RequestId.php, frontend/src/lib/http.js, frontend/src/lib/erros.js, frontend/src/componentes/MensagemDeErro.jsx |
 | Métricas e health checks | /up, /api/v1/saude e Laravel Pulse | backend/app/Http/Controllers/Api/V1/SaudeController.php, backend/app/Services/SaudeService.php |
 | Documentação | OpenAPI gerado pelo Scramble (/docs/api), README e docs/ | README.md, docs/API.md |

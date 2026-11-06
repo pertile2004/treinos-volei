@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@layer base {
+  body {
+    background-color: var(--color-fundo);
+    color: var(--color-texto);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primaria);
+    outline-offset: 2px;
+  }
+}

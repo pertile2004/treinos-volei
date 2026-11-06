@@ -13,30 +13,37 @@ Status: em desenvolvimento — veja docs/ESTADO.md.
 docs/ESPECIFICACAO.md · docs/ARQUITETURA.md · docs/MODELO-DE-DADOS.md · docs/API.md · docs/DESIGN.md · docs/ROADMAP.md
 
 ## Como rodar
-Sempre a partir da raiz do repositório (Windows: Git Bash ou PowerShell). O frontend entra com o PR-02.
+Sempre a partir da raiz do repositório (Windows: Git Bash ou PowerShell).
 
-Requisitos: Node 24, PHP 8.4 com a extensão pdo_pgsql, Composer e Docker Desktop (ou um PostgreSQL 17 local).
+Requisitos: Git, Node 24 ou mais novo, PHP 8.4 com a extensão pdo_pgsql, Composer, o GitHub CLI e Docker Desktop (ou um PostgreSQL 17 local).
 
 Primeira vez:
 1. `npm run setup` — git hooks e conferência do ambiente.
-2. `composer --working-dir=backend install`
-3. Copie `backend/.env.example` para `backend/.env` e rode `php backend/artisan key:generate`.
+2. `npm ci` e `npm --prefix frontend ci` — dependências da raiz e do front.
+3. `composer --working-dir=backend install`
+4. Copie `backend/.env.example` para `backend/.env` e rode `php backend/artisan key:generate`.
 
 Com Docker:
-- `npm run dev` sobe o PostgreSQL e o Mailpit (`docker compose up -d --wait`), roda as migrations e inicia a API em http://127.0.0.1:8000.
+- `npm run dev` sobe o PostgreSQL e o Mailpit (`docker compose up -d --wait`), roda as migrations e inicia juntos a API em http://127.0.0.1:8000 e o front em http://localhost:5173.
 - O Mailpit mostra os e-mails enviados em http://localhost:8025.
 
 Sem Docker (PostgreSQL instalado na máquina):
 1. Crie o usuário `volleypro` (senha `volleypro`, só para desenvolvimento) e os bancos `volleypro` e `volleypro_teste`, os dois com esse usuário como dono.
 2. `php backend/artisan migrate`
-3. `php backend/artisan serve --host=127.0.0.1 --port=8000`
+3. `npm run dev:api` — só a API em http://127.0.0.1:8000.
+4. Em outro terminal, `npm run dev:web` — só o front em http://localhost:5173.
 
-Conferir: http://127.0.0.1:8000/up, http://127.0.0.1:8000/api/v1/saude e a documentação da API em http://127.0.0.1:8000/docs/api (só em desenvolvimento).
+Conferir: http://127.0.0.1:8000/up, http://127.0.0.1:8000/api/v1/saude, a documentação da API em http://127.0.0.1:8000/docs/api (só em desenvolvimento) e http://localhost:5173/dev/status.
+
+O Vite encaminha /api, /sanctum e /docs para a API em http://127.0.0.1:8000. Sem a API no ar, as telas abrem e http://localhost:5173/dev/status mostra uma mensagem de erro com o botão "Tentar de novo". Para usar outras portas, defina E2E_WEB_PORT (front) e E2E_API_PORT (API) antes do comando.
 
 Testes e qualidade:
+- `npm run verificar` — tudo que o CI roda (documentação, autoria, lint, análise e testes do backend, lint, testes e build do front).
 - `npm run teste:api` — testes do backend (usa o banco `volleypro_teste`). Se o npm não encontrar o Composer no Windows, rode `composer --working-dir=backend test`.
-- `npm run verificar` — tudo que o CI roda.
+- `npm run teste:web` — testes do front (Vitest); `npm --prefix frontend run test:cobertura` mostra a cobertura.
 - `composer --working-dir=backend formatar` — formata o PHP com o Pint.
+- `npm --prefix frontend run lint` e `npm --prefix frontend run formatar` — ESLint e Prettier.
+- `npm --prefix frontend run build` e `npm --prefix frontend run preview` — build de produção e prévia em http://localhost:4173.
 
 ## Equipe
 docs/INTEGRANTES.md

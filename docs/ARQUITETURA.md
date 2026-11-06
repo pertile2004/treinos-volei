@@ -1,7 +1,7 @@
 # Arquitetura
 
 ## Visão geral
-Navegador (SPA React) → mesma origem → API Laravel (/api/v1) → PostgreSQL. Em desenvolvimento, o Vite (5173) encaminha /api, /sanctum e /docs para o Laravel (8000). Em produção, o Laravel serve os arquivos do SPA e a API no mesmo domínio, exigência do Sanctum com cookies.
+Navegador (SPA React) → mesma origem → API Laravel (/api/v1) → PostgreSQL. Em desenvolvimento, o Vite (5173) encaminha /api, /sanctum e /docs para o Laravel (8000); o `vite preview` (4173) faz o mesmo. As variáveis de ambiente E2E_WEB_PORT e E2E_API_PORT trocam a porta do front e a porta da API (ADR-017). Em produção, o Laravel serve os arquivos do SPA e a API no mesmo domínio, exigência do Sanctum com cookies.
 
 ## MVC em camadas (backend)
 Rota → Middleware (request id, autenticação, rate limit) → FormRequest (validação) → Controller fino → Service (regra de negócio, transações) → Model Eloquent → banco. Policies fazem a autorização e API Resources montam o JSON. O React é a camada de apresentação para o usuário.
@@ -15,11 +15,22 @@ Estrutura real desde o PR-01 (tudo em backend/):
 - app/Services (SaudeService, ReferenciasService), app/Http/Controllers/Api/V1 (controllers invocáveis) e app/Http/Resources.
 - config/logging.php: canais `daily` (desenvolvimento) e `stderr` (produção) com JsonFormatter; o Context entra em `extra`.
 - lang/pt_BR: mensagens de validação, autenticação, paginação e senha.
-- Raiz: docker-compose.yml (postgres:17 com os bancos volleypro e volleypro_teste, e Mailpit), scripts/dev.mjs (`npm run dev`) e .mcp.json (Laravel Boost).
+- Raiz: docker-compose.yml (postgres:17 com os bancos volleypro e volleypro_teste, e Mailpit), scripts/dev.mjs (preparação do `npm run dev` e o `npm run dev:api`) e .mcp.json (Laravel Boost).
 - Testes: o phpunit.xml usa o banco volleypro_teste; a variável de ambiente DB_DATABASE, se existir, tem precedência.
 
 ## Frontend
 src/app (rotas e provedores), src/paginas, src/funcionalidades/<modulo>/ (api.js, hooks.js, componentes/), src/componentes (design system), src/lib (http, datas, formatação), src/estilos (tokens). Estado do servidor: TanStack Query. Estado local: useState/useReducer. Formulários: React Hook Form + Zod.
+
+O que existe desde o PR-02 (tudo em frontend/):
+- src/main.jsx: cria o roteador (createBrowserRouter) e o QueryClient e liga a navegação do cliente HTTP ao roteador.
+- src/app/rotas.jsx: tabela única de rotas. As públicas (/entrar, /cadastro, /esqueci-a-senha, /redefinir-senha, /termos e /privacidade) ficam fora do AppShell; as demais ficam dentro. A /dev/status só existe em desenvolvimento e `*` é a 404. A proteção por login e por papel entra a partir do PR-05.
+- src/app/AppShell.jsx: link "Pular para o conteúdo", navegação principal (fixa embaixo; coluna lateral a partir de 1024 px) e o `<main id="conteudo">`. A lista `itens` e o componente NavegacaoPrincipal são provisórios: o PR-03 troca por NavInferior e BarraLateral sem mexer nas rotas.
+- src/lib/http.js: axios com baseURL /api/v1, withCredentials e withXSRFToken; X-Request-Id novo a cada requisição; em 419 busca /sanctum/csrf-cookie e repete uma vez; em 401 vai para /entrar?voltar=<rota pedida>.
+- src/lib/erros.js: `descreverErro(erro)` devolve status, mensagem em pt-BR e o request_id (do corpo, do cabeçalho da resposta ou o enviado).
+- src/componentes/: Pagina (h1 e título do documento), Carregando, MensagemDeErro e EstadoVazio.
+- src/paginas/: uma página por tela, só com o título; paginas/dev/Status.jsx consulta /api/v1/saude com TanStack Query.
+- src/estilos/tokens.css: tokens provisórios do docs/DESIGN.md no `@theme` do Tailwind 4 (a paleta padrão fica desligada); o PR-03 substitui.
+- src/testes/: preparação do Vitest (jest-dom e servidor MSW que falha em requisição não prevista) e o auxiliar `renderizarRotas`.
 
 ## Autenticação
 GET /sanctum/csrf-cookie → POST /api/v1/auth/entrar → cookie de sessão HttpOnly → requisições com withCredentials e X-XSRF-TOKEN. Em 419, novo cookie e uma única repetição. Sessões no banco.
@@ -35,10 +46,10 @@ Exceções da API viram JSON com message, errors (validação) e request_id, sem
 
 ## Dependências aprovadas
 Fixe versões exatas. Adicionar outra exige registro no DECISOES.md.
-- Backend: laravel/framework 13, laravel/sanctum, dedoc/scramble, laravel/tinker (ADR-016), laravel/pulse (PR-28).
+- Backend: laravel/framework 13, laravel/sanctum, dedoc/scramble, laravel/tinker (ADR-018), laravel/pulse (PR-28).
 - Backend, desenvolvimento: pestphp/pest 4, pestphp/pest-plugin-laravel, larastan/larastan, laravel/pint, laravel/boost, fakerphp/faker, mockery/mockery.
 - Frontend: react, react-dom, react-router, @tanstack/react-query, axios, react-hook-form, zod, @hookform/resolvers, recharts, tailwindcss e @tailwindcss/vite (4.2.2 ou mais nova), vite 8, @vitejs/plugin-react, vite-plugin-pwa (PR-26), idb-keyval (PR-27).
-- Frontend, desenvolvimento: vitest, @vitest/coverage-v8, jsdom, @testing-library/react, @testing-library/user-event, @testing-library/jest-dom, msw, vitest-axe, eslint, @eslint/js, globals, eslint-plugin-react-hooks, eslint-plugin-jsx-a11y, prettier, @playwright/test, @axe-core/playwright.
+- Frontend, desenvolvimento: vitest, @vitest/coverage-v8, jsdom, @testing-library/react, @testing-library/dom, @testing-library/user-event, @testing-library/jest-dom, msw, vitest-axe, eslint, @eslint/js, globals, eslint-plugin-react-hooks, eslint-plugin-jsx-a11y, prettier, @playwright/test, @axe-core/playwright.
 - Raiz: concurrently.
 
 ## Deploy

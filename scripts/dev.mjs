@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-// Sobe o ambiente de desenvolvimento: banco e Mailpit (Docker), migrations e a API.
-// Uso: npm run dev   (a porta da API vem de E2E_API_PORT; padrão 8000)
+// Ambiente de desenvolvimento do backend.
+// Sem argumentos: prepara o ambiente (banco e Mailpit pelo Docker e as migrations) e termina.
+// Com --api: inicia só a API (a porta vem de E2E_API_PORT; padrão 8000).
+// O `npm run dev` roda a preparação e depois sobe a API e o front juntos, com o concurrently.
 import { execFileSync, spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -31,28 +33,30 @@ if (!existsSync(path.join(RAIZ, 'backend', '.env'))) {
   process.exit(1);
 }
 
-etapa(
-  'Docker: PostgreSQL e Mailpit',
-  'docker',
-  ['compose', 'up', '-d', '--wait'],
-  'Confira se o Docker Desktop está aberto. Sem Docker, veja no README como usar um PostgreSQL local.',
-);
-etapa(
-  'Migrations',
-  'php',
-  ['backend/artisan', 'migrate', '--force'],
-  'Confira os dados do banco em backend/.env.',
-);
-
-console.log(`\n=== API em http://127.0.0.1:${porta} (Ctrl+C para parar) ===`);
-const api = spawn('php', ['backend/artisan', 'serve', '--host=127.0.0.1', `--port=${porta}`], {
-  cwd: RAIZ,
-  stdio: 'inherit',
-});
-api.on('error', (erro) => {
-  console.error(`[FALHOU] não consegui iniciar a API: ${erro.message}`);
-  process.exitCode = 1;
-});
-api.on('exit', (codigo) => {
-  process.exitCode = codigo ?? 0;
-});
+if (process.argv.includes('--api')) {
+  console.log(`\n=== API em http://127.0.0.1:${porta} (Ctrl+C para parar) ===`);
+  const api = spawn('php', ['backend/artisan', 'serve', '--host=127.0.0.1', `--port=${porta}`], {
+    cwd: RAIZ,
+    stdio: 'inherit',
+  });
+  api.on('error', (erro) => {
+    console.error(`[FALHOU] não consegui iniciar a API: ${erro.message}`);
+    process.exitCode = 1;
+  });
+  api.on('exit', (codigo) => {
+    process.exitCode = codigo ?? 0;
+  });
+} else {
+  etapa(
+    'Docker: PostgreSQL e Mailpit',
+    'docker',
+    ['compose', 'up', '-d', '--wait'],
+    'Confira se o Docker Desktop está aberto. Sem Docker, veja no README como usar um PostgreSQL local.',
+  );
+  etapa(
+    'Migrations',
+    'php',
+    ['backend/artisan', 'migrate', '--force'],
+    'Confira os dados do banco em backend/.env.',
+  );
+}
