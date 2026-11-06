@@ -83,4 +83,14 @@ class Exercicio extends Model
     {
         return $this->hasMany(TreinoItem::class);
     }
+
+    /**
+     * Séries registradas com este exercício.
+     *
+     * @return HasMany<SessaoSerie, $this>
+     */
+    public function sessaoSeries(): HasMany
+    {
+        return $this->hasMany(SessaoSerie::class);
+    }
 }

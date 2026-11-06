@@ -58,4 +58,14 @@ class Treino extends Model
     {
         return $this->hasMany(TreinoItem::class);
     }
+
+    /**
+     * Sessões em que este treino foi executado.
+     *
+     * @return HasMany<Sessao, $this>
+     */
+    public function sessoes(): HasMany
+    {
+        return $this->hasMany(Sessao::class);
+    }
 }
