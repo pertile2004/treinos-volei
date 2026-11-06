@@ -75,4 +75,31 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 - 422 traz a mensagem do validador em pt-BR, por exemplo "O campo nome é obrigatório. (e mais 1 erro)".
 
 ### Cabeçalhos de segurança (todas as respostas)
-`X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+`X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Content-Security-Policy: frame-src 'self' https://www.youtube-nocookie.com` (PR-08; só essa diretiva, a CSP completa fica para o PR de segurança) · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+
+## PR-08 — biblioteca de exercícios (somente leitura)
+
+Quem: qualquer usuário logado (jogador, treinador ou admin), pelo grupo `auth:sanctum` e pela ExercicioPolicy (viewAny e view). Sem sessão: 401. Ainda não há limitador de taxa na API (o 429 do contrato depende do limitador `api`, pendência do PR-05).
+
+### GET /exercicios — lista paginada
+Query string (tudo opcional; valor vazio é ignorado):
+
+| Campo | Regras |
+|-------|--------|
+| fundamento | um valor de `fundamentos` de /referencias (Rule::enum) |
+| nivel | um valor de `niveis` de /referencias (Rule::enum) |
+| busca | texto, até 100 caracteres; casa com o **nome**, sem diferenciar maiúsculas nem acentos (`recepcao` encontra "Recepção"); `%`, `_` e `\` são tratados como texto |
+| page | inteiro ≥ 1 (padrão 1) |
+| por_pagina | inteiro de 1 a 50 (padrão 15) |
+
+- Filtros combinam por E. Excluídos logicamente não aparecem (RN-07). Ordem: nome e depois id.
+- 200: `{ "data": [item...], "links": { "first", "last", "prev", "next" }, "meta": { "current_page", "from", "last_page", "links", "path", "per_page", "to", "total" } }` (paginador padrão do Laravel; os links mantêm os filtros).
+- Item da lista: `{ "id": 12, "nome": "Recepção em manchete contra a parede", "foco": "Plataforma firme e direção da bola", "fundamento": "recepcao", "fundamento_rotulo": "Recepção", "nivel": "iniciante", "nivel_rotulo": "Iniciante", "series_padrao": 3, "repeticoes_padrao": 15, "duracao_segundos_padrao": null, "descanso_segundos": 45, "tem_video": false, "imagem_url": "/ilustracoes/recepcao.svg" }`. A lista não traz `descricao` nem `video_url`.
+- `imagem_url` nunca é null: sem imagem própria, vem a ilustração do fundamento (`/ilustracoes/<fundamento>.svg`, arquivo estático do front em frontend/public/ilustracoes/).
+- 422 (`errors` por campo, mensagens em pt-BR): fundamento ou nivel fora do enum, busca com mais de 100 caracteres, page menor que 1 ou não inteiro, por_pagina fora de 1–50.
+
+### GET /exercicios/{id} — detalhe
+- `{id}` numérico (outro formato: 404).
+- 200: `{ "data": { "id": 12, "nome": "...", "descricao": "...", "foco": "...", "fundamento": "recepcao", "fundamento_rotulo": "Recepção", "nivel": "iniciante", "nivel_rotulo": "Iniciante", "series_padrao": 3, "repeticoes_padrao": 15, "duracao_segundos_padrao": null, "descanso_segundos": 45, "video_url": null, "imagem_url": "/ilustracoes/recepcao.svg" } }`. O detalhe não traz `tem_video`.
+- 404: id inexistente ou exercício excluído logicamente. `criado_por`, `deleted_at` e timestamps nunca são expostos.
+- `video_url` é a URL gravada (YouTube); o front converte para `https://www.youtube-nocookie.com/embed/<id>` e, se não for do YouTube, trata como sem vídeo.

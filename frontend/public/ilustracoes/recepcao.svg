@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <title>Jogador fazendo manchete</title>
+  <line x1="6" y1="88" x2="90" y2="88"/>
+  <circle cx="40" cy="30" r="6"/>
+  <line x1="39" y1="36" x2="31" y2="58"/>
+  <line x1="38" y1="40" x2="60" y2="58"/>
+  <polyline points="31,58 45,68 40,86"/>
+  <polyline points="31,58 33,72 21,86"/>
+  <circle cx="62" cy="44" r="7"/>
+  <path d="M58 39.5 Q60 47 68 46"/>
+  <path stroke-dasharray="2 4" stroke-linecap="butt" d="M72 36 Q78 22 90 16"/>
+</svg>

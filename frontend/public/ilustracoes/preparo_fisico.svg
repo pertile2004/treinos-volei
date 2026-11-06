@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <title>Pessoa fazendo agachamento com salto</title>
+  <line x1="6" y1="88" x2="90" y2="88"/>
+  <circle cx="48" cy="22" r="6"/>
+  <line x1="48" y1="28" x2="48" y2="52"/>
+  <polyline points="26,18 48,36 70,18"/>
+  <polyline points="48,52 33,60 38,72"/>
+  <polyline points="48,52 63,60 58,72"/>
+  <path stroke-dasharray="2 4" stroke-linecap="butt" d="M38 76 v8 M58 76 v8"/>
+</svg>

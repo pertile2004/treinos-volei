@@ -29,13 +29,15 @@ Com Docker:
 
 Sem Docker (PostgreSQL instalado na máquina):
 1. Crie o usuário `volleypro` (senha `volleypro`, só para desenvolvimento) e os bancos `volleypro` e `volleypro_teste`, os dois com esse usuário como dono.
-2. `php backend/artisan migrate`
+2. `php backend/artisan migrate` e `php backend/artisan db:seed` (usuário de exemplo e os 42 exercícios da biblioteca)
 3. `npm run dev:api` — só a API em http://127.0.0.1:8000.
 4. Em outro terminal, `npm run dev:web` — só o front em http://localhost:5173.
 
 Conferir: http://127.0.0.1:8000/up, http://127.0.0.1:8000/api/v1/saude, a documentação da API em http://127.0.0.1:8000/docs/api (só em desenvolvimento) e http://localhost:5173/dev/status.
 
 O Vite encaminha /api, /sanctum e /docs para a API em http://127.0.0.1:8000. Sem a API no ar, as telas abrem e http://localhost:5173/dev/status mostra uma mensagem de erro com o botão "Tentar de novo". Para usar outras portas, defina E2E_WEB_PORT (front) e E2E_API_PORT (API) antes do comando.
+
+O catálogo do design system fica em http://localhost:5173/dev/componentes (só em desenvolvimento): todos os componentes de frontend/src/componentes/ em todos os estados. Os tokens e a tabela de contraste estão no docs/DESIGN.md.
 
 Testes e qualidade:
 - `npm run verificar` — tudo que o CI roda (documentação, autoria, lint, análise e testes do backend, lint, testes e build do front).
