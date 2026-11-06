@@ -74,5 +74,27 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 - Mensagens fixas: 401 "Não autenticado." · 403 "Ação não autorizada." · 404 "Recurso não encontrado." · 405 "Método não permitido." · 429 "Muitas tentativas. Tente de novo em instantes." · 500 "Erro interno do servidor." · 503 "Serviço indisponível."
 - 422 traz a mensagem do validador em pt-BR, por exemplo "O campo nome é obrigatório. (e mais 1 erro)".
 
+## PR-04 — cadastro
+
+### POST /auth/cadastro — público, throttle `cadastro` (10/min por IP)
+Antes: GET /sanctum/csrf-cookie. O e-mail é aparado e passado para minúsculas antes de validar e gravar.
+
+Requisição (JSON):
+| Campo | Regras | Mensagem de 422 |
+|-------|--------|-----------------|
+| nome | obrigatório, 2 a 100 caracteres | "Informe seu nome (mínimo de 2 caracteres)." · "O nome pode ter no máximo 100 caracteres." |
+| email | obrigatório, e-mail válido, máximo 255, único | "Informe um e-mail válido." · "O e-mail pode ter no máximo 255 caracteres." · "O e-mail já está em uso." |
+| password | obrigatório, mínimo 8, confirmado | "A senha precisa ter no mínimo 8 caracteres." · "As senhas não conferem." |
+| password_confirmation | igual a password | (erro sai em `password`) |
+| papel | obrigatório, `jogador` ou `treinador` (`admin` → 422) | "Escolha entre jogador e treinador." |
+| aceite_termos | obrigatório, aceito (true) | "Você precisa aceitar os termos." |
+
+Outros campos enviados (meta_semanal, codigo_convite, treinador_id) são ignorados.
+
+- 201: `{ "data": { "id": 1, "nome": "Ana Souza", "email": "ana@example.com", "papel": "jogador", "meta_semanal": 3, "data_nascimento": null } }` — a conta nasce com meta_semanal 3, data_nascimento, codigo_convite e treinador_id nulos; a sessão é iniciada e regenerada (cookie de sessão na resposta). Nunca inclui password nem remember_token.
+- 422: `{ "message": "O e-mail já está em uso.", "errors": { "email": ["O e-mail já está em uso."] }, "request_id": "<id>" }`
+- 429: `{ "message": "Muitas tentativas. Tente de novo em instantes.", "request_id": "<id>" }` (requisições inválidas também contam).
+- 419: CSRF ausente ou expirado (o front repete uma vez).
+
 ### Cabeçalhos de segurança (todas as respostas)
 `X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
