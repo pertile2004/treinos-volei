@@ -461,8 +461,9 @@ describe('FormularioTreino — montagem do treino', () => {
     expect(within(item).getByRole('group', { name: 'Repetições' })).toHaveTextContent('10');
   });
 
-  it('o seletor para de adicionar quando o treino chega a 30 itens', async () => {
-    const usuario = userEvent.setup();
+  // 30 cliques com o user-event passam dos 5 s padrão com a máquina ocupada (mesmo prazo do catálogo do PR-03).
+  it('o seletor para de adicionar quando o treino chega a 30 itens', { timeout: 30_000 }, async () => {
+    const usuario = userEvent.setup({ delay: null });
     renderizar();
     registrarExercicios();
     await esperarFormulario();
