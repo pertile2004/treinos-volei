@@ -17,8 +17,6 @@ permissions:
 jobs:
   governanca:
     runs-on: ubuntu-latest
-    env:
-      BASE_REF: origin/${{ github.base_ref }}
     steps:
       - name: Baixar o repositório com o histórico completo
         uses: actions/checkout@v7
@@ -30,11 +28,16 @@ jobs:
         with:
           node-version: 24
 
+      # A BASE_REF fica só nas duas etapas abaixo: a action do gitleaks também lê essa variável.
       # PR em rascunho: nível push. PR pronto para revisão: nível pronto.
       - name: Documentação viva
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
         run: node scripts/verificar-docs.mjs --nivel=${{ github.event.pull_request.draft && 'push' || 'pronto' }}
 
       - name: Autoria dos commits e do PR
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
         run: node scripts/verificar-autoria.mjs
 
       - name: Varredura de segredos
