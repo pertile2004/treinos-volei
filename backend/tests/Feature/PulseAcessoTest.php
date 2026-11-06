@@ -2,6 +2,7 @@
 
 use App\Enums\Papel;
 use App\Models\User;
+use Laravel\Pulse\Facades\Pulse;
 
 /**
  * Cria um usuário com o papel pedido. O papel fica só em memória (forceFill sem
@@ -54,4 +55,15 @@ it('devolve o request id tambem no painel do Pulse', function () {
         ->get('/pulse', ['X-Request-Id' => 'pulse-12345678'])
         ->assertOk()
         ->assertHeader('X-Request-Id', 'pulse-12345678');
+});
+
+it('resolve o usuario do Pulse sem e-mail nem avatar externo', function () {
+    $usuario = User::factory()->create();
+
+    $dados = Pulse::resolveUsers(collect([$usuario->getKey()]))->find($usuario->getKey());
+
+    expect($dados->name)->toBe($usuario->name)
+        ->and($dados->extra)->toBe('id '.$usuario->getKey())
+        ->and($dados->extra)->not->toContain($usuario->email)
+        ->and(property_exists($dados, 'avatar'))->toBeFalse();
 });
