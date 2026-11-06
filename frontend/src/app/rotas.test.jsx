@@ -6,7 +6,7 @@ import { rotas } from './rotas.jsx';
 
 const PUBLICAS = [
   ['/entrar', 'Entrar'],
-  ['/cadastro', 'Cadastro'],
+  ['/cadastro', 'Crie sua conta'],
   ['/esqueci-a-senha', 'Esqueci a senha'],
   ['/redefinir-senha', 'Redefinir senha'],
   ['/termos', 'Termos de uso'],
