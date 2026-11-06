@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import Avatar from '../../../componentes/Avatar.jsx';
+import AvisoNovaVersao from '../../../componentes/AvisoNovaVersao.jsx';
 import Botao from '../../../componentes/Botao.jsx';
 import ModalDeConfirmacao from '../../../componentes/ModalDeConfirmacao.jsx';
 
@@ -44,10 +45,11 @@ function Legenda({ children }) {
   return <p className="text-sm text-texto-secundario">{children}</p>;
 }
 
-/** Seção "Apoio" do catálogo /dev/componentes: Avatar e ModalDeConfirmacao em todas as variações. */
+/** Seção "Apoio" do catálogo /dev/componentes: Avatar, ModalDeConfirmacao e AvisoNovaVersao em todas as variações. */
 export default function SecaoApoio() {
   const idDoTitulo = useId();
   const [modalAberto, setModalAberto] = useState(null);
+  const [avisoAberto, setAvisoAberto] = useState(false);
 
   const modal = MODAIS[modalAberto]?.props ?? { titulo: '' };
   const fecharModal = () => setModalAberto(null);
@@ -90,6 +92,20 @@ export default function SecaoApoio() {
           aberto={modalAberto !== null}
           aoConfirmar={fecharModal}
           aoCancelar={fecharModal}
+        />
+      </Componente>
+
+      <Componente nome="AvisoNovaVersao">
+        <Legenda>Fixo no topo, não rouba o foco e não some sozinho: Atualizar ou Depois o fecham.</Legenda>
+        <div className={LINHA}>
+          <Botao variante="secundario" onClick={() => setAvisoAberto(true)}>
+            Mostrar aviso de nova versão
+          </Botao>
+        </div>
+        <AvisoNovaVersao
+          aberto={avisoAberto}
+          aoAtualizar={() => setAvisoAberto(false)}
+          aoAdiar={() => setAvisoAberto(false)}
         />
       </Componente>
     </section>
