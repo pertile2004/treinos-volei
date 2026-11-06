@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import Abas, { PainelDaAba } from '../../../componentes/Abas.jsx';
@@ -31,6 +31,9 @@ export default function FormularioCadastro() {
   const navegar = useNavigate();
   const cadastro = useCadastro();
   const [erroGeral, setErroGeral] = useState(null);
+  // O estado `isPending` só muda no próximo render; dois envios no mesmo instante (clique + Enter)
+  // passariam pela validação assíncrona antes dele. O ref barra o segundo de forma síncrona.
+  const enviando = useRef(false);
   const idAceite = useId();
   const idErroAceite = `${idAceite}-erro`;
 
@@ -55,18 +58,21 @@ export default function FormularioCadastro() {
   const papel = useWatch({ control, name: 'papel' });
 
   function enviar(dados) {
-    if (cadastro.isPending) return;
+    if (enviando.current || cadastro.isPending) return;
+    enviando.current = true;
     setErroGeral(null);
     cadastro.mutate(dados, {
+      // No sucesso o ref fica ligado: a tela navega para o início e não há segundo cadastro.
       onSuccess: () => navegar('/'),
       onError: (erro) => {
+        enviando.current = false;
         if (!aplicarErrosDaApi(erro, setError)) setErroGeral(erro);
       },
     });
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit(enviar)} className="flex flex-col gap-4">
+    <form noValidate onSubmit={(evento) => handleSubmit(enviar)(evento)} className="flex flex-col gap-4">
       <Abas
         itens={PAPEIS}
         ativa={papel}
