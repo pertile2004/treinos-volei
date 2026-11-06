@@ -70,4 +70,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(self::class, 'treinador_id');
     }
+
+    /**
+     * Treinos criados pelo usuário.
+     *
+     * @return HasMany<Treino, $this>
+     */
+    public function treinos(): HasMany
+    {
+        return $this->hasMany(Treino::class, 'autor_id');
+    }
 }

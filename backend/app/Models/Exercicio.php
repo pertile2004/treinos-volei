@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -71,5 +72,15 @@ class Exercicio extends Model
     public function criador(): BelongsTo
     {
         return $this->belongsTo(User::class, 'criado_por');
+    }
+
+    /**
+     * Itens de treino que usam este exercício.
+     *
+     * @return HasMany<TreinoItem, $this>
+     */
+    public function treinoItens(): HasMany
+    {
+        return $this->hasMany(TreinoItem::class);
     }
 }
