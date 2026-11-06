@@ -12,7 +12,7 @@
 - Próximo: PR-03 — Design system a partir do Figma — Integrante 4 (depende do PR-02 e das telas do Figma em docs/design/telas/). O PR-01 — Integrante 2 segue em paralelo.
 
 ## Em andamento
-- (nada)
+- PR-03 — Design system a partir do Figma: em implementação
 
 ## Pendências
 - [ ] PENDENTE: o grupo vai enviar nomes, usuários do GitHub e e-mails → preencher docs/INTEGRANTES.md.
