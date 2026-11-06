@@ -45,7 +45,7 @@ Testes e qualidade:
 - `npm run teste:web` — testes do front (Vitest); `npm --prefix frontend run test:cobertura` mostra a cobertura.
 - `composer --working-dir=backend formatar` — formata o PHP com o Pint.
 - `npm --prefix frontend run lint` e `npm --prefix frontend run formatar` — ESLint e Prettier.
-- `npm --prefix frontend run build` e `npm --prefix frontend run preview` — build de produção e prévia em http://localhost:4173.
+- `npm --prefix frontend run build` e `npm --prefix frontend run preview` — build de produção e prévia em http://localhost:4173. É na prévia (não no `dev`) que o PWA existe: manifest, service worker e a oferta de instalação do Chrome/Edge. Se o navegador ficar preso numa versão antiga, clique em "Atualizar" no aviso ou use DevTools > Application > Service Workers > Unregister.
 
 ## Equipe
 docs/INTEGRANTES.md

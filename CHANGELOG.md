@@ -11,6 +11,7 @@ Formato Keep a Changelog, em português. Versões em SemVer.
 - Scripts `npm run dev:web` e `npm run teste:web` na raiz e job `frontend` no CI (lint, testes com cobertura, build e auditoria das dependências).
 - Design system (PR-03): tokens finais no tema do Tailwind (borda de controle, fonte do sistema, tamanhos de destaque e de cronômetro) e os componentes Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas, Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao, acessíveis e testados com axe.
 - Catálogo /dev/componentes (só em desenvolvimento), com todos os componentes em todos os estados, e tabela de contraste no docs/DESIGN.md.
+- PWA instalável (PR-26): manifest em pt-BR (VOLLEY PRO, tema escuro, ícones 192/512 any e maskable), service worker gerado pelo vite-plugin-pwa 2.0.0 com pré-cache do app shell e stale-while-revalidate só para GET de exercícios e treinos (só respostas 200; /eu nunca cacheado), aviso "Nova versão disponível" com Atualizar e Depois (componente AvisoNovaVersao, no catálogo), limpeza dos caches de API em todo 401 e `encerrarSessaoLocal` para o logout.
 ### Alterado
 - AppShell usa os componentes do design system: barra de navegação inferior abaixo de 1024 px e barra lateral a partir daí, com ícones.
 - Transições e animações são desligadas para quem pede menos movimento no sistema.

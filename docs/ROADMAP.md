@@ -35,7 +35,7 @@ Regras:
 | 23 | Treinador: compartilhar treinos | Integrante 6 | 22, 13 | sim | ☐ | |
 | 24 | Treinador: evolução dos atletas | Integrante 1 | 23, 19 | sim | ☐ | |
 | 25 | Layout desktop completo | Integrante 2 | 20 | sim | ☐ | |
-| 26 | PWA instalável | Integrante 3 | 20 | sim | ☐ | |
+| 26 | PWA instalável | Integrante 3 | 20 | sim | ✅ | |
 | 27 | Modo offline do treino | Integrante 4 | 26, 16 | sim | ☐ | |
 | 28 | Observabilidade e análise de qualidade | Integrante 5 | 20 | Pulse e Sonar | ☐ | |
 | 29 | Auditoria de segurança e acessibilidade | Integrante 6 | 21 e os não cortados de 22 a 28 | não | ☐ | |

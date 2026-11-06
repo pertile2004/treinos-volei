@@ -2,20 +2,25 @@
 > Atualizado em todo PR pelo /encerrar. Mantenha curto (até ~80 linhas).
 
 ## Agora
-- Último PR concluído: PR-03 — Design system a partir do Figma — Integrante 4 — 2026-11-06
-- O que entrou: tokens finais no `@theme` do Tailwind (novos: `borda-controle`, `font-sans`, `text-destaque` e `text-cronometro`) e redução de movimento; os 14 componentes do docs/DESIGN.md em frontend/src/componentes/ (Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas, Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao), cada um com teste de Testing Library e axe; o catálogo /dev/componentes (só em desenvolvimento); o AppShell com NavInferior abaixo de 1024 px e BarraLateral a partir daí; a tabela de contraste no docs/DESIGN.md; vitest-axe 0.1.0.
-- Feito sem o Figma e sem as telas exportadas (ADR-022): vale o docs/DESIGN.md; a comparação com o Figma está nas pendências.
-- Do PR-01 — Esqueleto do backend — Integrante 2 (mesmo dia): backend no ar em backend/ (Laravel 13, PostgreSQL), com GET /api/v1/saude e GET /api/v1/referencias; `npm run dev` sobe banco, API e front e `npm run verificar` roda backend e frontend juntos.
+- Último PR concluído: PR-26 — PWA instalável — Integrante 3 — 2026-11-06 (frente paralela; as telas 04–21 estão sendo construídas em outras branches a partir da mesma base do PR-03)
+- O que entrou: vite-plugin-pwa 2.0.0 em frontend/vite.config.js com manifest em pt-BR ("VOLLEY PRO", tema #0E0E0E, ícones 192/512 any e maskable em frontend/public/icones/), pré-cache do app shell, fallback de navegação fora de /api, /sanctum, /docs, /up e /pulse e stale-while-revalidate só para GET de /exercicios e /treinos (só 200; /eu nunca cacheado); AvisoNovaVersao (15º componente do design system) e src/app/AtualizacaoDoApp.jsx (registro do service worker e "Atualizar"/"Depois"); src/lib/pwa.js com limparCachesDoApp() (chamada em todo 401) e encerrarSessaoLocal(queryClient) para o logout do PR-05. ADR-026.
+- Antes: PR-03 — Design system (Integrante 4), PR-02 — Esqueleto do frontend e PR-01 — Esqueleto do backend (Integrante 2), todos em 2026-11-06; veja docs/historico/.
 - Como testar:
-  1. `npm run setup`, `npm ci`, `npm --prefix frontend ci` e `composer --working-dir=backend install`; copie backend/.env.example para backend/.env e rode `php backend/artisan key:generate`.
-  2. `npm run dev` (com Docker) ou, com PostgreSQL local, `php backend/artisan migrate`, `npm run dev:api` e `npm run dev:web`; abra http://127.0.0.1:8000/api/v1/saude, /api/v1/referencias e http://localhost:5173/dev/componentes (navegue com Tab; teste em 360 px e em 1440 px).
-  3. `npm run verificar` (backend e frontend).
-- Próximo: PR-04 — Cadastro, Termos e Privacidade — Integrante 5 (depende do PR-01 e do PR-03, os dois concluídos).
+  1. `npm ci`, `npm --prefix frontend ci`, `composer --working-dir=backend install`; copie backend/.env.example para backend/.env e rode `php backend/artisan key:generate`.
+  2. `npm run verificar` (o build do front imprime "PWA v2.0.0 ... precache 18 entries" e gera frontend/dist/sw.js e manifest.webmanifest).
+  3. `npm --prefix frontend run build` e `npm --prefix frontend run preview`; no Chrome/Edge abra http://localhost:4173 > DevTools > Application > Manifest (sem erros, com a opção de instalar); rode o build de novo e recarregue para ver "Nova versão disponível."; em desenvolvimento (`npm run dev`) o service worker não existe.
+- Próximo: PR-04 — Cadastro, Termos e Privacidade — Integrante 5 (depende do PR-01 e do PR-03). O PR-27 (modo offline do treino) depende deste PR-26 e do PR-16.
 
 ## Em andamento
 - (nenhum)
 
 ## Pendências
+- [ ] PR-26, aceite não conferido nesta máquina (sem navegador real): abrir o build servido (`vite preview`) no Chrome/Edge, confirmar em DevTools > Application que não há erro de instalabilidade e que o navegador oferece instalar; provocar uma versão nova e conferir o aviso e o "Atualizar". Registrar a evidência em docs/historico/PR-26.md.
+- [ ] PR-26: frontend/e2e/pwa.spec.js foi escrito mas não executado (não há Playwright nesta branch). Quem criar o playwright.config.js (PR-05) roda esse spec contra o `vite preview` (não o dev) e ajusta o que ele supõe das telas; o aceite "sem rede mostra a biblioteca já vista" completo (Biblioteca e detalhes) só pode ser conferido quando as telas (PR-08+) e o login (PR-05) existirem.
+- [ ] PR-05: no sucesso de "sair" e no DELETE /eu, chamar `encerrarSessaoLocal(queryClient)` de frontend/src/lib/pwa.js (limpa o TanStack Query e os caches de API do service worker).
+- [ ] PR-26, janela aceita do stale-while-revalidate: um exercício excluído ou que perdeu visibilidade (RN-06/RN-07) pode aparecer por um carregamento na lista em cache; a revalidação corrige na leitura seguinte. Mensagem própria de "offline sem cache" fica para quando as telas existirem.
+- [ ] PR-30 (deploy no Laravel): servir sw.js e manifest.webmanifest da raiz do site, sem cache HTTP longo no sw.js e sem cair no fallback do index.html; a CSP precisa permitir o service worker e o manifest da mesma origem.
+- [ ] `npm audit` do frontend passa a listar também vulnerabilidades low/moderate transitivas do workbox-build (glob, minimatch, deepmerge), via vite-plugin-pwa; não barra o CI (nível high).
 - [ ] PENDENTE: o grupo vai enviar nomes, usuários do GitHub e e-mails → preencher docs/INTEGRANTES.md.
 - [ ] Dono do repositório: proteger a main (checks `governanca`, `frontend` e `backend` obrigatórios, incluindo administradores) e adicionar os colaboradores. O job `frontend` só roda no GitHub quando o PR é aberto; no PR-02 e no PR-03 a mesma sequência foi rodada só na máquina.
 - [ ] PR-03, aceite sem evidência: exportar as 6 telas do Figma em PNG 2x para docs/design/telas/ e comparar lado a lado com /dev/componentes; se houver diferença, ajustar os tokens (frontend/src/estilos/tokens.css e docs/DESIGN.md) e confirmar a fonte (ADR-022).
