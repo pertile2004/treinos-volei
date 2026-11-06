@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\ReferenciasController;
 use App\Http\Controllers\Api\V1\SaudeController;
+use App\Http\Controllers\Api\V1\TreinoController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
@@ -11,3 +12,7 @@ Route::get('/saude', SaudeController::class)
     ->withoutMiddleware(EnsureFrontendRequestsAreStateful::class)
     ->name('saude');
 Route::get('/referencias', ReferenciasController::class)->name('referencias');
+
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::post('/treinos', [TreinoController::class, 'store'])->name('treinos.criar');
+});
