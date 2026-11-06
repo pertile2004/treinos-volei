@@ -44,3 +44,33 @@ it('responde 503 quando o banco esta fora', function () {
 it('responde 200 em /up', function () {
     $this->get('/up')->assertOk();
 });
+
+it('responde 503 ao SPA mesmo com a sessao no banco inacessivel', function () {
+    config([
+        'sanctum.stateful' => ['localhost:5173'],
+        'database.connections.fora' => array_merge(config('database.connections.pgsql'), [
+            'host' => '127.0.0.1',
+            'port' => 1,
+            'options' => [PDO::ATTR_TIMEOUT => 1],
+        ]),
+        'session.driver' => 'database',
+        'session.connection' => 'fora',
+    ]);
+
+    $this->app->bind(VerificadorBanco::class, fn () => new class implements VerificadorBanco
+    {
+        public function disponivel(): bool
+        {
+            return false;
+        }
+    });
+
+    $resposta = $this->getJson('/api/v1/saude', [
+        'Origin' => 'http://localhost:5173',
+        'Referer' => 'http://localhost:5173/dev/status',
+    ]);
+
+    $resposta->assertStatus(503)
+        ->assertJsonPath('message', 'Banco de dados indisponível.')
+        ->assertJsonPath('data.banco', 'fora');
+});

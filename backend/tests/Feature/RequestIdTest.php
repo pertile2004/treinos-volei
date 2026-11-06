@@ -75,3 +75,9 @@ it('registra o request id em cada linha do log JSON', function () {
         ->and($linha['level_name'])->toBe('INFO')
         ->and($linha['extra']['request_id'])->toBe('log-12345678');
 });
+
+it('usa um canal com formatador JSON quando LOG_CHANNEL nao esta definido', function () {
+    $padrao = (require config_path('logging.php'))['default'];
+
+    expect(['daily', 'stderr'])->toContain($padrao);
+});
