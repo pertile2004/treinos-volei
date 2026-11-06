@@ -9,7 +9,7 @@ const SECOES = [
   ['Base', ['Botao', 'CampoTexto', 'Cartao', 'ChipFiltro', 'Etiqueta']],
   ['Navegação', ['Abas', 'Cabecalho', 'NavInferior', 'BarraLateral']],
   ['Treino', ['Stepper', 'BarraDeProgresso', 'Cronometro']],
-  ['Apoio', ['Avatar', 'ModalDeConfirmacao']],
+  ['Apoio', ['Avatar', 'ModalDeConfirmacao', 'AvisoNovaVersao']],
 ];
 
 const CONTROLES = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex="0"]';
@@ -49,10 +49,10 @@ describe('/dev/componentes', () => {
     ).toEqual(componentes);
   });
 
-  it('mostra os 14 componentes do design system, cada um uma vez', async () => {
+  it('mostra os 15 componentes do design system, cada um uma vez', async () => {
     await abrirCatalogo();
     const nomes = screen.getAllByRole('heading', { level: 3 }).map((titulo) => titulo.textContent);
-    expect(nomes).toHaveLength(14);
+    expect(nomes).toHaveLength(15);
     expect([...nomes].sort()).toEqual(SECOES.flatMap(([, componentes]) => componentes).sort());
   });
 

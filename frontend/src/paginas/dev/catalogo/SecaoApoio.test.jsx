@@ -17,7 +17,7 @@ if (typeof prototipoDoDialogo.close !== 'function') {
   };
 }
 
-const COMPONENTES = ['Avatar', 'ModalDeConfirmacao'];
+const COMPONENTES = ['Avatar', 'ModalDeConfirmacao', 'AvisoNovaVersao'];
 
 function renderizar() {
   return render(

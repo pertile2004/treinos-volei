@@ -116,3 +116,34 @@ describe('http', () => {
     expect(erro.config.headers.get('X-Request-Id')).toMatch(UUID);
   });
 });
+
+describe('http e os caches do PWA', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('em 401 apaga os caches de API do service worker (sessão encerrada)', async () => {
+    const apagar = vi.fn(async () => true);
+    vi.stubGlobal('caches', { keys: async () => ['api-biblioteca', 'workbox-precache-v2'], delete: apagar });
+    definirNavegacao(vi.fn());
+    servidor.use(rede.get('/api/v1/eu', () => HttpResponse.json({ message: 'Nao autenticado.' }, { status: 401 })));
+    await expect(http.get('/eu')).rejects.toMatchObject({ response: { status: 401 } });
+    await vi.waitFor(() => expect(apagar).toHaveBeenCalledWith('api-biblioteca'));
+    expect(apagar).toHaveBeenCalledTimes(1);
+  });
+
+  it('em 401 já em /entrar também apaga os caches de API', async () => {
+    const apagar = vi.fn(async () => true);
+    vi.stubGlobal('caches', { keys: async () => ['api-biblioteca'], delete: apagar });
+    window.history.pushState({}, '', '/entrar');
+    servidor.use(rede.get('/api/v1/eu', () => HttpResponse.json({ message: 'Nao autenticado.' }, { status: 401 })));
+    await expect(http.get('/eu')).rejects.toMatchObject({ response: { status: 401 } });
+    await vi.waitFor(() => expect(apagar).toHaveBeenCalledWith('api-biblioteca'));
+  });
+
+  it('em 200 não mexe nos caches', async () => {
+    const apagar = vi.fn(async () => true);
+    vi.stubGlobal('caches', { keys: async () => ['api-biblioteca'], delete: apagar });
+    servidor.use(rede.get('/api/v1/saude', () => HttpResponse.json({ data: { status: 'ok' } })));
+    await http.get('/saude');
+    expect(apagar).not.toHaveBeenCalled();
+  });
+});
