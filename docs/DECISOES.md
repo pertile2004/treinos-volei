@@ -1,0 +1,47 @@
+# Registro de decisões
+Cada decisão tem número, data, motivo e consequência. Nova decisão vai no fim. Nunca apague uma decisão: se ela mudar, crie outra que a substitui.
+
+- ADR-001 (2026-11-06) Backend em Laravel 13 com Eloquent (ORM) e PostgreSQL; o Node do quadro fica no frontend (Vite/React).
+  - Motivo: Laravel é MVC nativo e foi a escolha do grupo.
+  - Consequência: o Prisma não é usado, porque só funciona em Node.
+- ADR-002 (2026-11-06) MVC em camadas (Controller → Service → Model) em vez de Clean/Hexagonal.
+  - Motivo: KISS e YAGNI; o Eloquent é Active Record.
+  - Consequência: interfaces só nas fronteiras externas.
+- ADR-003 (2026-11-06) Autenticação Sanctum SPA (cookie de sessão + CSRF) em vez de JWT.
+  - Motivo: é o padrão consolidado e oficial do Laravel, e o token não fica acessível ao JavaScript.
+  - Consequência: front e API precisam estar na mesma origem.
+- ADR-004 (2026-11-06) Português no domínio, mantendo os nomes exigidos pelo framework (users, password, data, links, meta, message, errors).
+  - Motivo: evita brigar com as convenções do Laravel.
+  - Consequência: todo model declara a tabela com #[Table].
+- ADR-005 (2026-11-06) Sem IA no MVP.
+  - Motivo: está fora do escopo pedido.
+  - Consequência: a seção da home vira "Treinos do seu treinador" ou "Treinos em destaque".
+- ADR-006 (2026-11-06) Performance por fundamento = acertos ÷ (acertos + erros) marcados no modo treino.
+  - Motivo: é o "dado real" que as personas pedem.
+  - Consequência: aparece "sem dados" quando não houver tentativas.
+- ADR-007 (2026-11-06) Automação total: cada PR é revisado por um agente revisor em contexto limpo e mergeado com CI verde; no início de cada turno, o integrante seguinte revisa o PR anterior.
+  - Motivo: escolha do grupo.
+  - Consequência: é um desvio consciente do item "aprovação prévia por outro desenvolvedor" do documento de boas práticas.
+- ADR-008 (2026-11-06) Merge commit, sem squash.
+  - Motivo: preserva os commits e a autoria de cada integrante.
+- ADR-009 (2026-11-06) Documentação viva obrigatória em todo PR.
+  - Motivo: qualquer integrante continua de onde o outro parou.
+  - Consequência: o CI (verificar-docs) e os hooks garantem a atualização.
+- ADR-010 (2026-11-06) Commits só com a identidade do integrante e sem menção a IA.
+  - Motivo: exigência do professor.
+  - Consequência: configuração attribution, hook commit-msg e checagem no CI.
+- ADR-011 (2026-11-06) Deploy em Render (Docker, grátis) e Neon (PostgreSQL grátis), com o SPA servido pelo Laravel.
+  - Motivo: custo zero e mesma origem para o Sanctum.
+  - Consequência: o plano grátis do Render dorme quando fica sem uso.
+- ADR-012 (2026-11-06) Figma MCP com orçamento de 5 chamadas.
+  - Motivo: contas Starter/View têm 6 chamadas por mês.
+  - Consequência: os resultados ficam salvos em docs/design/figma/.
+- ADR-013 (2026-11-06) Na Biblioteca, a aba "Treinos Prontos" lista exercícios prontos (drills) e "Meus Treinos" lista as sequências montadas; "treinos em destaque" são treinos públicos do admin.
+  - Motivo: é a interpretação do Figma.
+  - Consequência: confirmar com o grupo se necessário.
+- ADR-014 (2026-11-06) Qualquer idade pode usar; data de nascimento opcional.
+  - Motivo: é um trabalho acadêmico.
+  - Consequência: a limitação frente ao ECA Digital (Lei 15.211/2025) fica documentada no README.
+- ADR-015 (2026-11-06) Ajustes no .claude/settings.json depois de conferir a documentação oficial do Claude Code (settings, permissions e hooks).
+  - Motivo: no Windows, um hook escrito como texto de shell roda no Git Bash e, sem ele, no PowerShell, que não expande "$CLAUDE_PROJECT_DIR"; uma regra Bash(...) não vale para a ferramenta PowerShell, que é o terminal principal no Windows; e o link de sessão é uma terceira forma de atribuição, com chave própria.
+  - Consequência: os três hooks usam a forma exec (command "node" e args com ${CLAUDE_PROJECT_DIR}), que não depende de shell; o guarda-comandos tem onFailure "block" (se o hook não conseguir rodar, o comando é bloqueado); as regras allow e deny de Bash ganharam o equivalente em PowerShell(...), menos "git branch -D" (o PowerShell não diferencia maiúsculas e a regra pegaria o "-d") e "rm -r" (já coberto pelas regras de Remove-Item); e attribution ganhou sessionUrl false. Isso exige o Node no PATH e o Claude Code atualizado (onFailure pede a versão 2.1.295 ou mais nova). O guarda-comandos continua sendo a barreira principal.
