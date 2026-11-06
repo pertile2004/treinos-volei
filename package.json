@@ -1,0 +1,14 @@
+{
+  "name": "volley-pro",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "verificar": "node scripts/verificar.mjs",
+    "docs:verificar": "node scripts/verificar-docs.mjs",
+    "autoria:verificar": "node scripts/verificar-autoria.mjs"
+  }
+}

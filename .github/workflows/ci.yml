@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# Cancela execuções antigas do mesmo PR.
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  governanca:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositório com o histórico completo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Instalar o Node 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # A BASE_REF fica só nas duas etapas abaixo: a action do gitleaks também lê essa variável.
+      # PR em rascunho: nível push. PR pronto para revisão: nível pronto.
+      - name: Documentação viva
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+        run: node scripts/verificar-docs.mjs --nivel=${{ github.event.pull_request.draft && 'push' || 'pronto' }}
+
+      - name: Autoria dos commits e do PR
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+        run: node scripts/verificar-autoria.mjs
+
+      - name: Varredura de segredos
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: false

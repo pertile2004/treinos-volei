@@ -1,0 +1,12 @@
+# Definição de Pronto (vale para todo PR)
+- [ ] Escopo do card completo, e nada fora dele.
+- [ ] Testes de aceite escritos antes e passando; nenhum teste existente apagado, pulado ou afrouxado.
+- [ ] Backend: FormRequest, Policy, Resource e Service (com transação quando grava várias tabelas); 401, 403/404 e 422 testados.
+- [ ] Front: estados de carregando, erro e vazio; textos em pt-BR; só tokens do DESIGN; axe sem violações; navegável pelo teclado.
+- [ ] Nenhum mock, dado fixo ou TODO em código de produção; sem console.log, dd ou dump esquecidos.
+- [ ] Nenhum segredo no código; .env.example atualizado se surgiu variável nova.
+- [ ] `npm run verificar -- --pronto` verde, com o resumo no PR.
+- [ ] Revisor (e revisor-seguranca, quando aplicável) sem achados abertos de correção ou segurança.
+- [ ] Docs vivos: ESTADO, ROADMAP, CHANGELOG, historico/PR-XX e os específicos do card.
+- [ ] Commits em Conventional Commits pt-BR, com a autoria do integrante e sem menção a IA.
+- [ ] CI verde, merge feito e main local atualizada.
