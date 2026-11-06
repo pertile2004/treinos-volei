@@ -71,6 +71,13 @@ jobs:
       - name: Testes com cobertura
         run: npm run test:cobertura
 
+      - name: Guardar a cobertura para o Sonar
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-frontend
+          path: frontend/coverage/lcov.info
+          if-no-files-found: error
+
       - name: Build
         run: npm run build
 
@@ -127,7 +134,53 @@ jobs:
         run: composer --working-dir=backend analise
 
       - name: Testes com cobertura
-        run: composer --working-dir=backend test -- --coverage
+        run: composer --working-dir=backend test -- --coverage --coverage-clover=coverage/clover.xml
+
+      - name: Guardar a cobertura para o Sonar
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-backend
+          path: backend/coverage/clover.xml
+          if-no-files-found: error
 
       - name: Auditoria das dependências
         run: composer --working-dir=backend audit
+
+  # Analise no SonarQube Cloud: so roda quando o dono cadastrou o segredo SONAR_TOKEN.
+  # Sem o segredo (ou em PR de fork), as etapas sao puladas e o job termina verde.
+  # O contexto secrets nao pode ser usado no if; por isso ele passa pela variavel de ambiente.
+  sonar:
+    runs-on: ubuntu-latest
+    needs: [frontend, backend]
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - name: Baixar o repositório com o histórico completo
+        if: env.SONAR_TOKEN != ''
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Baixar a cobertura do frontend
+        if: env.SONAR_TOKEN != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: cobertura-frontend
+          path: frontend/coverage
+
+      - name: Baixar a cobertura do backend
+        if: env.SONAR_TOKEN != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: cobertura-backend
+          path: backend/coverage
+
+      - name: Analisar no SonarQube Cloud
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v8.4.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Sem SONAR_TOKEN
+        if: env.SONAR_TOKEN == ''
+        run: echo "SONAR_TOKEN não cadastrado: análise do Sonar pulada."
