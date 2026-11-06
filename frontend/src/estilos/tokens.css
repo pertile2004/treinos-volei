@@ -1,14 +1,30 @@
+/* Tokens do design system (docs/DESIGN.md). Só estas cores existem: bg-*, text-*, border-* e outline-*. */
 @theme {
   --color-*: initial;
   --color-fundo: #0e0e0e;
   --color-superficie: #1a1a1a;
   --color-superficie-elevada: #232323;
+  /* Divisória decorativa: cerca de 1,4:1 sobre o fundo, não serve de contorno de controle. */
   --color-borda: #2c2c2c;
+  /* Contorno de campo, chip, stepper e botão secundário: pelo menos 3:1 sobre os três fundos (WCAG 1.4.11). */
+  --color-borda-controle: #757575;
   --color-primaria: #d4ff00;
   --color-sobre-primaria: #0e0e0e;
   --color-texto: #ffffff;
   --color-texto-secundario: #a3a3a3;
   --color-perigo: #ff5a5f;
+
+  /* Raios: cartão 16 px e botão 12 px. Chip em pílula usa rounded-full. */
   --radius-cartao: 1rem;
   --radius-botao: 0.75rem;
+
+  /* Fonte: pilha do sistema (a fonte do Figma não foi confirmada). */
+  --font-sans: ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Escala: text-xs 12, text-sm 14, text-base 16, text-xl 20 e text-2xl 24 são os padrões do Tailwind. */
+  --text-destaque: 2rem;
+  --text-destaque--line-height: 2.5rem;
+  /* Cronômetro: de 56 px a 64 px conforme a largura da tela. */
+  --text-cronometro: clamp(3.5rem, 15vw, 4rem);
+  --text-cronometro--line-height: 1;
 }

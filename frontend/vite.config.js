@@ -1,6 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 // A API e o front ficam na mesma origem: o Vite encaminha /api, /sanctum e /docs para o Laravel.
 // E2E_API_PORT e E2E_WEB_PORT trocam as portas (testes E2E e cards em paralelo na mesma máquina).
@@ -15,6 +15,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/testes/preparar.js'],
+    // Os fluxos E2E (frontend/e2e/*.spec.js) são do Playwright, não do Vitest.
+    exclude: [...configDefaults.exclude, 'e2e/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],

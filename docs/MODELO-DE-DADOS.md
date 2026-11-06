@@ -11,7 +11,9 @@ id · nome varchar(120) · descricao text · foco varchar(160) null · fundament
 id · nome varchar(120) · descricao text null · nivel varchar(20) · visibilidade varchar(20): privado, atletas ou publico · autor_id → users (cascata ao excluir a conta) · duracao_estimada_minutos smallint · timestamps · deleted_at. Índice: (autor_id, visibilidade).
 
 ## treino_itens
-id · treino_id → treinos (cascata) · exercicio_id → exercicios · etapa varchar(20) · ordem smallint · series smallint · repeticoes smallint null · duracao_segundos int null · descanso_segundos smallint. Único: (treino_id, etapa, ordem). Regra: repeticoes ou duracao_segundos precisa estar preenchido.
+id · treino_id → treinos (cascata) · exercicio_id → exercicios · etapa varchar(20) · ordem smallint · series smallint · repeticoes smallint null · duracao_segundos int null · descanso_segundos smallint. Único: (treino_id, etapa, ordem). Índice: exercicio_id. Sem timestamps. Regra: repeticoes ou duracao_segundos precisa estar preenchido — CHECK `treino_itens_repeticoes_ou_duracao_check` no banco e `required_without` no FormRequest (PR-12). Migrations: 2026_11_06_201200_criar_tabela_treinos e 2026_11_06_201201_criar_tabela_treino_itens.
+
+Duração estimada (treinos.duracao_estimada_minutos, calculada só pelo servidor em TreinoService): por item, `series × (duracao_segundos, ou repeticoes × 3 s quando não há duração) + series × descanso_segundos`; soma em segundos, arredondada para cima em minutos, mínimo 1 (ADR-027).
 
 ## sessoes
 id · usuario_id → users (cascata) · treino_id → treinos null (vira null se apagado) · origem varchar(20): cronometro ou registro_rapido · iniciada_em timestamptz · finalizada_em timestamptz · duracao_segundos int · observacao text null · id_cliente uuid null único (idempotência offline) · timestamps. Índice: (usuario_id, iniciada_em).
