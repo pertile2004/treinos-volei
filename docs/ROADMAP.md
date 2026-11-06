@@ -12,7 +12,7 @@ Regras:
 | 00 | Fundação do repositório | Integrante 1 | — | não | ✅ | [#1](https://github.com/pertile2004/treinos-volei/pull/1) |
 | 01 | Esqueleto do backend | Integrante 2 | 00 | não | ✅ | [#3](https://github.com/pertile2004/treinos-volei/pull/3) |
 | 02 | Esqueleto base do frontend | Integrante 3 | 00 | não | ✅ | [#2](https://github.com/pertile2004/treinos-volei/pull/2) |
-| 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ☐ | |
+| 03 | Design system a partir do Figma | Integrante 4 | 02 | não | ✅ | |
 | 04 | Cadastro, Termos e Privacidade | Integrante 5 | 01, 03 | não | ☐ | |
 | 05 | Entrar, sair e rotas protegidas | Integrante 6 | 04 | não | ☐ | |
 | 06 | Recuperação de senha | Integrante 1 | 05 | não | ☐ | |
@@ -30,7 +30,7 @@ Regras:
 | 18 | Histórico de treinos | Integrante 1 | 16 | não | ☐ | |
 | 19 | Evolução: estatísticas e gráficos | Integrante 2 | 18 | não | ☐ | |
 | 20 | Início (home) | Integrante 3 | 19 | não | ☐ | |
-| 21 | Agenda e lembretes no app | Integrante 4 | 20 | só o lembrete | ☐ | |
+| 21 | Agenda e lembretes no app | Integrante 4 | 20 | só o lembrete | ✅ | [#9](https://github.com/pertile2004/treinos-volei/pull/9) |
 | 22 | Treinador: código e atletas | Integrante 5 | 07 | sim | ☐ | |
 | 23 | Treinador: compartilhar treinos | Integrante 6 | 22, 13 | sim | ☐ | |
 | 24 | Treinador: evolução dos atletas | Integrante 1 | 23, 19 | sim | ☐ | |

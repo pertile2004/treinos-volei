@@ -20,7 +20,7 @@ id · usuario_id → users (cascata) · treino_id → treinos null (vira null se
 id · sessao_id → sessoes (cascata) · exercicio_id → exercicios null · fundamento varchar(20) · numero smallint · repeticoes smallint null · acertos smallint padrão 0 · erros smallint padrão 0 · duracao_segundos int null. Índices: sessao_id e fundamento.
 
 ## agendamentos
-id · usuario_id → users (cascata) · treino_id → treinos (cascata) · data date · hora time null · sessao_id → sessoes null · timestamps. Índice: (usuario_id, data).
+id · usuario_id → users (cascata) · treino_id → treinos (cascata, índice) · data date (dia local em America/Sao_Paulo, não um instante UTC) · hora time null (hora local) · sessao_id → sessoes null, vira null se a sessão for apagada (índice) · timestamps. Índice: (usuario_id, data), que também serve de índice da FK usuario_id. Sem deleted_at: remover é exclusão física. Concluído = sessao_id preenchido. Criada no PR-21 (migration create_agendamentos_table); como treinos usa exclusão lógica, a cascata do banco não dispara ao excluir um treino: a RN-08 é garantida no AgendamentoService.
 
 ## Tabelas do framework
 password_reset_tokens, sessions, cache, jobs, personal_access_tokens (Sanctum) e pulse_* (PR-28).

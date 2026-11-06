@@ -76,3 +76,35 @@ Rotas fora de /api/v1: GET /sanctum/csrf-cookie, GET /up e GET /docs/api (OpenAP
 
 ### Cabeçalhos de segurança (todas as respostas)
 `X-Content-Type-Options: nosniff` · `X-Frame-Options: DENY` · `Referrer-Policy: strict-origin-when-cross-origin` · `Permissions-Policy: camera=(), microphone=(), geolocation=()` · `Strict-Transport-Security: max-age=31536000; includeSubDomains` só em produção.
+
+## PR-21 — agenda (/agendamentos)
+Todas exigem sessão (`auth:sanctum`; sem sessão, 401). Agendamento que não existe ou é de outro usuário responde 404 (Policy do dono com `denyAsNotFound`). "Hoje" é sempre o dia local em America/Sao_Paulo, calculado no servidor (RN-01). Sem rate limit específico (o throttle da API é transversal e fica para o card de autenticação).
+
+Recurso `Agendamento` (igual em todas as respostas; o envelope `{ "data": {...} }` é montado à mão porque o recurso tem um campo chamado `data`):
+```json
+{ "data": { "id": 12, "data": "2026-11-09", "hora": "18:30", "concluido": false, "sessao_id": null,
+            "treino": { "id": 5, "nome": "Saque e recepção", "duracao_estimada_minutos": 40 } } }
+```
+`hora` é "HH:MM" ou null. `concluido` = `sessao_id` não nulo. `treino` vem por eager loading, inclusive treino excluído logicamente (os agendamentos passados continuam legíveis).
+
+### GET /agendamentos — dono
+- Query: `de` (obrigatório, Y-m-d) e `ate` (obrigatório, Y-m-d, igual ou posterior a `de`). Intervalo de no máximo 31 dias corridos contando os dois extremos (`de=2026-11-01&ate=2026-12-01` passa; `ate=2026-12-02` dá 422).
+- 200: `{ "data": [ {...}, ... ] }`, só do usuário logado, ordenado por `data`, `hora` (sem hora por último) e `id`. Sem paginação: o intervalo é limitado.
+- 422 em `de`/`ate`: "Informe a data inicial.", "Informe a data final.", "A data final não pode ser anterior à inicial.", "O intervalo não pode passar de 31 dias." e, para formato inválido, a mensagem padrão "O campo de/até deve estar no formato Y-m-d.".
+
+### POST /agendamentos — logado (vira dono)
+- Corpo: `treino_id` (obrigatório, inteiro; treino existente, não excluído e visível ao usuário pela RN-06: dele, público, ou "para atletas" cujo autor é o seu treinador), `data` (obrigatório, Y-m-d, hoje ou futuro) e `hora` (opcional, null ou H:i).
+- 201 com o recurso.
+- 422: `treino_id` inexistente, excluído ou invisível respondem igual, "Escolha um treino." (sem revelar se existe); `data` "Informe a data." / "A data não pode ser anterior a hoje." / "O campo data deve estar no formato Y-m-d."; `hora` "O campo hora deve estar no formato H:i." (inclusive "18:30:00").
+
+### PATCH /agendamentos/{id} — dono
+- Corpo: `data` (opcional, mesmas regras) e `hora` (opcional, null ou H:i). `treino_id` e `sessao_id` enviados são ignorados.
+- 200 com o recurso. 404 se não existe ou não é seu.
+- 422 em agendamento já concluído: `{ "message": "Este agendamento já foi concluído.", "errors": { "agendamento": ["Este agendamento já foi concluído."] } }` (a chave `agendamento` não é um campo do formulário; o front a mostra como aviso geral).
+
+### DELETE /agendamentos/{id} — dono
+- 204, sem corpo. Exclusão física; a sessão vinculada, se houver, continua. 404 se não existe ou não é seu.
+
+### Serviços para os outros cards (sem rota própria)
+- `AgendamentoService::vincularSessaoDeHoje(Sessao): ?Agendamento` — vínculo automático (RF-13): a sessão recém-criada com `treino_id` conclui o agendamento pendente de hoje do mesmo usuário e treino (menor hora, depois menor id). O `SessaoService::registrar` (PR-16) deve chamá-lo dentro da transação, só quando a sessão foi criada agora (não no reenvio idempotente por `id_cliente`).
+- `AgendamentoService::removerFuturosDoTreino(Treino): int` — RN-08: remove os agendamentos pendentes do treino de hoje em diante, de todos os usuários; passados, concluídos e sessões ficam. O service de exclusão de treino (PR-15) deve chamá-lo dentro da transação.

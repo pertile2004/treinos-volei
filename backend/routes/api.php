@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AgendamentoController;
 use App\Http\Controllers\Api\V1\ReferenciasController;
 use App\Http\Controllers\Api\V1\SaudeController;
 use Illuminate\Support\Facades\Route;
@@ -11,3 +12,15 @@ Route::get('/saude', SaudeController::class)
     ->withoutMiddleware(EnsureFrontendRequestsAreStateful::class)
     ->name('saude');
 Route::get('/referencias', ReferenciasController::class)->name('referencias');
+
+// Rotas que exigem sessão (cookie do Sanctum); a Policy de cada recurso responde 404 ao que não é seu.
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::get('/agendamentos', [AgendamentoController::class, 'index'])->name('agendamentos.index');
+    Route::post('/agendamentos', [AgendamentoController::class, 'store'])->name('agendamentos.store');
+    Route::patch('/agendamentos/{agendamento}', [AgendamentoController::class, 'update'])
+        ->whereNumber('agendamento')
+        ->name('agendamentos.update');
+    Route::delete('/agendamentos/{agendamento}', [AgendamentoController::class, 'destroy'])
+        ->whereNumber('agendamento')
+        ->name('agendamentos.destroy');
+});
