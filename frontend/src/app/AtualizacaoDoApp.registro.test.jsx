@@ -4,7 +4,8 @@ import { renderizarRotas } from '../testes/renderizar.jsx';
 import AtualizacaoDoApp from './AtualizacaoDoApp.jsx';
 import { rotas } from './rotas.jsx';
 
-// Sem substituto: usa o módulo virtual real do vite-plugin-pwa, que fora do build de produção é um registro vazio.
+// Usa o substituto de src/testes/pwa-registro-desligado.js (alias de virtual:pwa-register/react em vite.config.js),
+// que imita o registro vazio de dev. O módulo virtual real do plugin só é conferido no build + preview.
 describe('AtualizacaoDoApp com o registro desligado (dev e testes)', () => {
   it('o app monta sem erro, sem aviso e sem tocar em navigator.serviceWorker', async () => {
     expect('serviceWorker' in navigator).toBe(false);
