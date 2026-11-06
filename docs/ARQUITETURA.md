@@ -37,17 +37,17 @@ O que existe desde o PR-02 (tudo em frontend/):
 GET /sanctum/csrf-cookie → POST /api/v1/auth/entrar → cookie de sessão HttpOnly → requisições com withCredentials e X-XSRF-TOKEN. Em 419, novo cookie e uma única repetição. Sessões no banco.
 
 ## Erros e logs
-Exceções da API viram JSON com message, errors (validação) e request_id, sem stack trace fora de local. Logs em JSON com request_id (Context), em stderr na produção e em arquivo no desenvolvimento. O front envia X-Request-Id em toda requisição e mostra o id nas mensagens de erro.
+Exceções da API viram JSON com message, errors (validação) e request_id, sem stack trace fora de local. Logs em JSON com request_id (Context), em stderr na produção e em arquivo no desenvolvimento. O middleware RegistrarRequisicao grava uma linha por requisição (padrão da rota, status, duração, usuário) no canal `requisicoes`: é a latência e a taxa de erros por rota. O front envia X-Request-Id em toda requisição e mostra o id nas mensagens de erro, com botão para copiar. Métricas do servidor no Laravel Pulse (/pulse, só admin pelo gate viewPulse).
 
 ## Qualidade
 - Backend: Pest (unidade e integração com banco real), Larastan e Pint.
 - Frontend: Vitest + Testing Library + MSW + vitest-axe, ESLint (react-hooks, jsx-a11y) e Prettier.
 - Ponta a ponta: Playwright + axe.
-- O CI no GitHub Actions bloqueia o merge com qualquer falha.
+- O CI no GitHub Actions bloqueia o merge com qualquer falha. SonarQube Cloud roda no job `sonar` só quando o segredo SONAR_TOKEN existe (ADR-027) e não é obrigatório.
 
 ## Dependências aprovadas
 Fixe versões exatas. Adicionar outra exige registro no DECISOES.md.
-- Backend: laravel/framework 13, laravel/sanctum, dedoc/scramble, laravel/tinker (ADR-018), laravel/pulse (PR-28).
+- Backend: laravel/framework 13, laravel/sanctum, dedoc/scramble, laravel/tinker (ADR-018), laravel/pulse 1.8.1 (ADR-026).
 - Backend, desenvolvimento: pestphp/pest 4, pestphp/pest-plugin-laravel, larastan/larastan, laravel/pint, laravel/boost, fakerphp/faker, mockery/mockery.
 - Frontend: react, react-dom, react-router, @tanstack/react-query, axios, react-hook-form, zod, @hookform/resolvers, recharts, tailwindcss e @tailwindcss/vite (4.2.2 ou mais nova), vite 8, @vitejs/plugin-react, vite-plugin-pwa (PR-26), idb-keyval (PR-27).
 - Frontend, desenvolvimento: vitest, @vitest/coverage-v8, jsdom, @testing-library/react, @testing-library/dom, @testing-library/user-event, @testing-library/jest-dom, msw, vitest-axe, eslint, @eslint/js, globals, eslint-plugin-react-hooks, eslint-plugin-jsx-a11y, prettier, @playwright/test, @axe-core/playwright.

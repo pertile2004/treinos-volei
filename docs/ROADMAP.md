@@ -37,7 +37,7 @@ Regras:
 | 25 | Layout desktop completo | Integrante 2 | 20 | sim | ☐ | |
 | 26 | PWA instalável | Integrante 3 | 20 | sim | ☐ | |
 | 27 | Modo offline do treino | Integrante 4 | 26, 16 | sim | ☐ | |
-| 28 | Observabilidade e análise de qualidade | Integrante 5 | 20 | Pulse e Sonar | ☐ | |
+| 28 | Observabilidade e análise de qualidade | Integrante 5 | 20 | Pulse e Sonar | ✅ | |
 | 29 | Auditoria de segurança e acessibilidade | Integrante 6 | 21 e os não cortados de 22 a 28 | não | ☐ | |
 | 30 | Deploy e demonstração | Integrante 1 | 29 | não | ☐ | |
 | 31 | Documentação final e apresentação | Integrante 2 | 30 | não | ☐ | |

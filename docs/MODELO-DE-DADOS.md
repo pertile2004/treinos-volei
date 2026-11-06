@@ -25,6 +25,8 @@ id · usuario_id → users (cascata) · treino_id → treinos (cascata) · data 
 ## Tabelas do framework
 password_reset_tokens, sessions, cache, jobs, personal_access_tokens (Sanctum) e pulse_* (PR-28).
 
+Tabelas do Laravel Pulse (PR-28, migration publicada pelo pacote laravel/pulse 1.8.1, não editada): pulse_values (id, timestamp, type, key, key_hash, value; único em type+key_hash), pulse_entries (id, timestamp, type, key, key_hash, value; índices por timestamp, type, key_hash e o composto para agregação) e pulse_aggregates (id, bucket, period, type, key, key_hash, aggregate, value decimal 20,2, count; único em bucket+period+type+aggregate+key_hash). No PostgreSQL key_hash é uma coluna gerada md5(key). Guardam 7 dias (PULSE_STORAGE_KEEP) e são lidas só pelo painel /pulse; nenhum model do domínio as usa.
+
 Criadas no PR-01 pelas migrations padrão do Laravel 13 e do Sanctum, sem alteração: users (ainda só com as colunas do framework: id, name, email, email_verified_at, password, remember_token e timestamps; o PR-04 adapta para o modelo acima), password_reset_tokens, sessions, cache, cache_locks, jobs, job_batches, failed_jobs, personal_access_tokens e migrations.
 
 ## Relacionamentos
