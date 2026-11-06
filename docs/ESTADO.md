@@ -2,20 +2,23 @@
 > Atualizado em todo PR pelo /encerrar. Mantenha curto (até ~80 linhas).
 
 ## Agora
-- Último PR concluído: PR-03 — Design system a partir do Figma — Integrante 4 — 2026-11-06
-- O que entrou: tokens finais no `@theme` do Tailwind (novos: `borda-controle`, `font-sans`, `text-destaque` e `text-cronometro`) e redução de movimento; os 14 componentes do docs/DESIGN.md em frontend/src/componentes/ (Botao, CampoTexto, Cartao, ChipFiltro, Etiqueta, Abas, Cabecalho, NavInferior, BarraLateral, Stepper, BarraDeProgresso, Cronometro, Avatar e ModalDeConfirmacao), cada um com teste de Testing Library e axe; o catálogo /dev/componentes (só em desenvolvimento); o AppShell com NavInferior abaixo de 1024 px e BarraLateral a partir daí; a tabela de contraste no docs/DESIGN.md; vitest-axe 0.1.0.
-- Feito sem o Figma e sem as telas exportadas (ADR-022): vale o docs/DESIGN.md; a comparação com o Figma está nas pendências.
-- Do PR-01 — Esqueleto do backend — Integrante 2 (mesmo dia): backend no ar em backend/ (Laravel 13, PostgreSQL), com GET /api/v1/saude e GET /api/v1/referencias; `npm run dev` sobe banco, API e front e `npm run verificar` roda backend e frontend juntos.
+- Último PR concluído: PR-21 — Agenda e lembretes no app — Integrante 4 — 2026-11-06 (frente H, construída em paralelo com os cards 04–07, 08–11, 12–15, 16–18, 19, 26 e 28 a partir da mesma base; PR-03 foi o último fechado na linha principal).
+- O que entrou: tabela `agendamentos` e GET/POST /api/v1/agendamentos, PATCH/DELETE /api/v1/agendamentos/{id} (só do dono, Policy com 404 para o alheio, "hoje" em America/Sao_Paulo); `AgendamentoService::vincularSessaoDeHoje` e `::removerFuturosDoTreino` (RN-08) prontos para os cards 16 e 15 chamarem; tela Agenda em /agenda (semana seg–dom, agendar, editar, remover, Pendente/Concluído, "Iniciar treino"); LembreteDeHoje em todas as telas do AppShell; AgendaDoDia e `useProximosAgendamentos` para o Início (card 20); src/lib com datas/formatos/tabelas (iguais às outras frentes), formularios.js e useHoje; react-hook-form, zod e @hookform/resolvers (ADR-026).
 - Como testar:
-  1. `npm run setup`, `npm ci`, `npm --prefix frontend ci` e `composer --working-dir=backend install`; copie backend/.env.example para backend/.env e rode `php backend/artisan key:generate`.
-  2. `npm run dev` (com Docker) ou, com PostgreSQL local, `php backend/artisan migrate`, `npm run dev:api` e `npm run dev:web`; abra http://127.0.0.1:8000/api/v1/saude, /api/v1/referencias e http://localhost:5173/dev/componentes (navegue com Tab; teste em 360 px e em 1440 px).
-  3. `npm run verificar` (backend e frontend).
-- Próximo: PR-04 — Cadastro, Termos e Privacidade — Integrante 5 (depende do PR-01 e do PR-03, os dois concluídos).
+  1. `npm --prefix frontend ci`, `composer --working-dir=backend install` e `php backend/artisan migrate` (PostgreSQL).
+  2. `npm run verificar` (Pint, Larastan, Pest; ESLint, Vitest e build).
+  3. `npm run dev`, abrir /agenda com uma sessão Sanctum (só a partir do PR-05): agendar um treino para hoje e recarregar qualquer tela para ver o lembrete.
+- Próximo: nesta frente nada (o card 21 era o único); na linha principal, PR-04 — Cadastro, Termos e Privacidade — Integrante 5 (outra frente, em andamento).
 
 ## Em andamento
-- (nenhum)
+- Frentes paralelas: PR-04 a 07 (autenticação), 08 a 11 (exercícios), 12 a 15 (treinos), 16 a 18 (sessões), 19 (evolução), 26 (PWA) e 28 (observabilidade), cada uma na sua branch.
 
 ## Pendências
+- [ ] PR-21, integração nos outros cards: chamar `AgendamentoService::vincularSessaoDeHoje` em `SessaoService::registrar` (PR-16, só na criação, não no reenvio por id_cliente) e `::removerFuturosDoTreino` no service de exclusão de treino (PR-15), nas transações; invalidar `["agendamentos"]` no front ao salvar sessão e ao excluir treino. Montar `<AgendaDoDia />` em Inicio.jsx (PR-20). Aqui só o service foi testado.
+- [ ] PR-21: rate limit 60/min das rotas não configurado (throttle do grupo api é transversal; definir no PR-04/05 junto com o armazenamento do contador).
+- [ ] PR-21, não conferido nesta máquina: navegador real (layout, contraste e leitor de tela da Agenda e do lembrete; só jsdom + axe), Docker e CI do GitHub. Sem login nesta frente, toda tela do AppShell dispara GET /agendamentos → 401 → /entrar; some depois do PR-05 (RotaProtegida).
+- [ ] PR-21, decisões simples a confirmar com o grupo: listagem por intervalo (até 31 dias) sem paginação (ADR-027); mesmo treino pode ser agendado mais de uma vez no dia; concluído só pelo vínculo automático e não é editável; "futuros" da RN-08 = hoje em diante e pendentes; sessão sincronizada offline no dia seguinte (PR-27) não acha o agendamento de "hoje" (alternativa: dia local de iniciada_em); treino que deixa de ser visível (atleta desvinculado, PR-22/23) continua na agenda.
+- [ ] PR-21: seletor de treino mostra só a 1ª página (15) dos escopos meus e destaque, sem o escopo treinador; quem tiver mais treinos não os vê no select.
 - [ ] PENDENTE: o grupo vai enviar nomes, usuários do GitHub e e-mails → preencher docs/INTEGRANTES.md.
 - [ ] Dono do repositório: proteger a main (checks `governanca`, `frontend` e `backend` obrigatórios, incluindo administradores) e adicionar os colaboradores. O job `frontend` só roda no GitHub quando o PR é aberto; no PR-02 e no PR-03 a mesma sequência foi rodada só na máquina.
 - [ ] PR-03, aceite sem evidência: exportar as 6 telas do Figma em PNG 2x para docs/design/telas/ e comparar lado a lado com /dev/componentes; se houver diferença, ajustar os tokens (frontend/src/estilos/tokens.css e docs/DESIGN.md) e confirmar a fonte (ADR-022).
@@ -38,3 +41,4 @@
 - Abas: duas na mesma tela com itens de mesmo `id` repetem os ids `aba-<id>` e `painel-<id>`; se precisar, acrescentar um prefixo por grupo.
 - No card de seeders: não criar o usuário de exemplo (test@example.com, senha da factory) em produção.
 - Separar o log dos testes do log diário de desenvolvimento (hoje os testes escrevem em backend/storage/logs).
+- PR-21: item "Agenda" na navegação principal (hoje 4 itens fixados pelos testes do AppShell) e promover CampoSelecao ao design system (src/componentes + catálogo).
