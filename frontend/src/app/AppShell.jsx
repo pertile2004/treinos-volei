@@ -1,42 +1,79 @@
-import { NavLink, Outlet } from 'react-router';
+import { Outlet } from 'react-router';
+import BarraLateral from '../componentes/BarraLateral.jsx';
+import NavInferior from '../componentes/NavInferior.jsx';
+import { useLarguraMinima } from '../lib/useLarguraMinima.js';
 
-// Navegação provisória: o PR-03 troca `itens` e `NavegacaoPrincipal` por NavInferior e BarraLateral
-// do design system, sem mexer nas rotas nem no restante do AppShell.
-const itens = [
-  { para: '/', rotulo: 'Início', exato: true },
-  { para: '/biblioteca', rotulo: 'Biblioteca' },
-  { para: '/treino', rotulo: 'Treino' },
-  { para: '/evolucao', rotulo: 'Evolução' },
-];
-
-function NavegacaoPrincipal() {
+// Ícones decorativos: a cor vem do texto do item e o nome acessível é sempre o rótulo.
+function Icone({ children }) {
   return (
-    <nav
-      aria-label="Navegação principal"
-      className="fixed inset-x-0 bottom-0 border-t border-borda bg-superficie lg:static lg:border-t-0 lg:border-r"
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 24 24"
+      className="size-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <ul className="flex lg:flex-col lg:p-2">
-        {itens.map((item) => (
-          <li key={item.para} className="flex-1 lg:flex-none">
-            <NavLink
-              to={item.para}
-              end={item.exato}
-              className={({ isActive }) =>
-                `flex min-h-11 items-center justify-center px-3 lg:justify-start ${
-                  isActive ? 'font-bold text-primaria' : 'text-texto-secundario'
-                }`
-              }
-            >
-              {item.rotulo}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-    </nav>
+      {children}
+    </svg>
   );
 }
 
+const itens = [
+  {
+    para: '/',
+    rotulo: 'Início',
+    exato: true,
+    icone: (
+      <Icone>
+        <path d="M3 11l9-8 9 8" />
+        <path d="M5 10v10h14V10" />
+      </Icone>
+    ),
+  },
+  {
+    para: '/biblioteca',
+    rotulo: 'Biblioteca',
+    icone: (
+      <Icone>
+        <path d="M5 4h14v16H5z" />
+        <path d="M9 4v16" />
+      </Icone>
+    ),
+  },
+  {
+    para: '/treino',
+    rotulo: 'Treino',
+    icone: (
+      <Icone>
+        <path d="M6 8v8" />
+        <path d="M3 10v4" />
+        <path d="M18 8v8" />
+        <path d="M21 10v4" />
+        <path d="M6 12h12" />
+      </Icone>
+    ),
+  },
+  {
+    para: '/evolucao',
+    rotulo: 'Evolução',
+    icone: (
+      <Icone>
+        <path d="M4 4v16h16" />
+        <path d="M8 16v-4" />
+        <path d="M12 16V8" />
+        <path d="M16 16v-6" />
+      </Icone>
+    ),
+  },
+];
+
 export default function AppShell() {
+  // Só uma navegação fica montada por vez: barra lateral a partir de 1024 px, barra inferior abaixo disso.
+  const telaLarga = useLarguraMinima(1024);
   return (
     <div className="min-h-dvh bg-fundo text-texto lg:grid lg:grid-cols-[16rem_1fr]">
       <a
@@ -45,7 +82,7 @@ export default function AppShell() {
       >
         Pular para o conteúdo
       </a>
-      <NavegacaoPrincipal />
+      {telaLarga ? <BarraLateral itens={itens} /> : <NavInferior itens={itens} />}
       <main id="conteudo" tabIndex={-1} className="pb-16 lg:pb-0">
         <Outlet />
       </main>
