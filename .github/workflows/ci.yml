@@ -183,4 +183,4 @@ jobs:
 
       - name: Sem SONAR_TOKEN
         if: env.SONAR_TOKEN == ''
-        run: echo "SONAR_TOKEN não cadastrado: análise do Sonar pulada."
+        run: echo "SONAR_TOKEN nao cadastrado - analise do Sonar pulada."
