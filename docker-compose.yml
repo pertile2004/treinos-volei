@@ -1,0 +1,29 @@
+# Serviços de desenvolvimento do VOLLEY PRO. Uso: `npm run dev` (ou `docker compose up -d --wait`).
+# Usuário e senha abaixo são só para desenvolvimento local.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: volleypro
+      POSTGRES_PASSWORD: volleypro
+      POSTGRES_DB: volleypro
+    ports:
+      - "5432:5432"
+    volumes:
+      - volleypro-postgres:/var/lib/postgresql/data
+      # Roda só na primeira subida do volume: cria o banco volleypro_teste.
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U volleypro -d volleypro"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  mailpit:
+    image: axllent/mailpit:v1.32.0
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Caixa de entrada no navegador
+
+volumes:
+  volleypro-postgres:

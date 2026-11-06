@@ -9,6 +9,8 @@
     "setup": "node scripts/setup.mjs",
     "verificar": "node scripts/verificar.mjs",
     "docs:verificar": "node scripts/verificar-docs.mjs",
-    "autoria:verificar": "node scripts/verificar-autoria.mjs"
+    "autoria:verificar": "node scripts/verificar-autoria.mjs",
+    "dev": "node scripts/dev.mjs",
+    "teste:api": "composer --working-dir=backend test"
   }
 }
