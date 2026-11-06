@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Papel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -25,10 +26,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'nome' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'papel' => Papel::Jogador,
             'remember_token' => Str::random(10),
         ];
     }
@@ -41,5 +43,21 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Usuário com papel de treinador (o código de convite continua null).
+     */
+    public function treinador(): static
+    {
+        return $this->state(['papel' => Papel::Treinador]);
+    }
+
+    /**
+     * Usuário com papel de admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(['papel' => Papel::Admin]);
     }
 }
