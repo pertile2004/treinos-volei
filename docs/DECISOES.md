@@ -77,8 +77,6 @@ Cada decisão tem número, data, motivo e consequência. Nova decisão vai no fi
   - Motivo: a `borda` (#2C2C2C) dá 1,38:1 sobre o fundo e não serve como único indicador de um campo, chip, stepper ou botão secundário (WCAG 1.4.11 pede 3:1).
   - Consequência: `borda-controle` dá 4,18, 3,77 e 3,41 sobre fundo, superfície e superfície elevada; a `borda` fica só para divisórias e borda de cartão. Também entraram `--text-destaque` (32 px) e `--text-cronometro` (56 a 64 px). O botão de perigo usa texto escuro, porque texto branco sobre `perigo` dá 3,05:1.
 - ADR-025 (2026-11-06) Só uma navegação principal montada por vez no AppShell.
-- ADR-026 (2026-11-06) Formulários do frontend com react-hook-form 7.91.0, zod 4.6.7 e @hookform/resolvers 7.0.3 (PR-04).
-- ADR-027 (2026-11-06) Guard de sessão injetado nos services de autenticação; e-mail em minúsculas; mensagens de 422 no FormRequest.
   - Motivo: NavInferior e BarraLateral têm o mesmo nome acessível ("Navegação principal"); as duas no DOM, uma escondida por CSS, duplicariam o landmark nos testes (o jsdom não aplica CSS) e dependeriam de `display: none` para não aparecer duas vezes ao leitor de tela.
   - Consequência: frontend/src/lib/useLarguraMinima.js (`useSyncExternalStore` sobre `matchMedia('(min-width: 1024px)')`) escolhe BarraLateral a partir de 1024 px e NavInferior abaixo disso; sem `matchMedia`, vale a NavInferior. O limite em px do hook e o `lg` do Tailwind (64rem) só coincidem com a fonte padrão de 16 px no navegador. Os ícones são SVG inline em cada arquivo (sem pasta nem biblioteca de ícones), por isso os quatro da navegação aparecem no AppShell.jsx e na seção do catálogo.
 - ADR-026 (2026-11-06) Formulários do frontend com react-hook-form 7.91.0, zod 4.6.7 e @hookform/resolvers 7.0.3 (PR-04).
