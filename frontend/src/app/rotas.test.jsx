@@ -6,7 +6,7 @@ import { rotas } from './rotas.jsx';
 
 const PUBLICAS = [
   ['/entrar', 'Entrar'],
-  ['/cadastro', 'Cadastro'],
+  ['/cadastro', 'Crie sua conta'],
   ['/esqueci-a-senha', 'Esqueci a senha'],
   ['/redefinir-senha', 'Redefinir senha'],
   ['/termos', 'Termos de uso'],
@@ -51,10 +51,11 @@ describe('rotas', () => {
     expect(document.title).toBe(`${titulo} · VOLLEY PRO`);
   });
 
-  it('a tabela de rotas tem as 23 telas, a de status e a 404', () => {
+  it('a tabela de rotas tem as 23 telas, a de status, o catalogo de componentes e a 404', () => {
     const caminhos = rotas.flatMap((rota) => (rota.children ?? [rota]).map((r) => (r.index ? '/' : r.path)));
-    expect(caminhos).toHaveLength(PUBLICAS.length + NO_APPSHELL.length + 2);
+    expect(caminhos).toHaveLength(PUBLICAS.length + NO_APPSHELL.length + 3);
     expect(caminhos).toContain('dev/status');
+    expect(caminhos).toContain('dev/componentes');
     expect(caminhos.at(-1)).toBe('*');
   });
 

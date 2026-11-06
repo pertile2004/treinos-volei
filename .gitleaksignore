@@ -1,0 +1,2 @@
+# Falso positivo do gitleaks: valor de teste (confirmacao de senha divergente) em commit ja publicado.
+9545869e6c845c5233332df907a466963d76b6f3:backend/tests/Feature/Auth/CadastroTest.php:generic-api-key:114

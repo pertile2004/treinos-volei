@@ -2,35 +2,44 @@
 > Atualizado em todo PR pelo /encerrar. Mantenha curto (até ~80 linhas).
 
 ## Agora
-- Último PR concluído: PR-01 — Esqueleto do backend — Integrante 2 — 2026-11-06 (o PR-02 — Esqueleto base do frontend — Integrante 3 entrou na main no mesmo dia, antes dele).
-- O que entrou no PR-01: API Laravel 13 (PHP 8.4) em backend/ com PostgreSQL; GET /api/v1/saude e GET /api/v1/referencias; seis enums com rótulo em pt-BR; X-Request-Id em toda resposta e em cada linha do log JSON; erros de /api/* em JSON padrão; cabeçalhos de segurança; CORS só para a origem do front (FRONTEND_URL), com credenciais; mensagens de validação em pt_BR; Pest, Larastan nível 6, Pint, Scramble e Laravel Boost; docker-compose.yml (PostgreSQL 17 e Mailpit); `npm run dev:api` e `npm run teste:api`; job `backend` no CI. Ainda não há autenticação nem models de domínio.
-- O que já estava na main (PR-02): frontend/ com Vite 8, React 19, Tailwind 4, React Router e TanStack Query; src/lib/http.js (X-Request-Id, 419 repete uma vez, 401 manda para /entrar) e src/lib/erros.js; AppShell com a navegação (Início, Biblioteca, Treino, Evolução); as 23 telas da especificação só com o título, a 404 e a /dev/status (só em dev); os componentes Pagina, Carregando, MensagemDeErro e EstadoVazio; ESLint, Prettier e Vitest com Testing Library e MSW; scripts `dev:web` e `teste:web`; job `frontend` no CI.
-- Juntos: `npm run dev` prepara o banco (Docker e migrations) e sobe a API e o front com o concurrently; `npm run verificar` roda backend e frontend.
-- Próximo: PR-03 — Design system a partir do Figma — Integrante 4 (depende do PR-02 e das telas do Figma em docs/design/telas/). Depois, PR-04 — Cadastro, Termos e Privacidade — Integrante 5 (depende do PR-01 e do PR-03).
-- Como testar o que existe:
-  1. `npm run setup`, `npm ci`, `npm --prefix frontend ci` e `composer --working-dir=backend install`; copie backend/.env.example para backend/.env e rode `php backend/artisan key:generate`.
-  2. `npm run dev` (com Docker) ou, com PostgreSQL local, `php backend/artisan migrate`, `npm run dev:api` e `npm run dev:web`; abra http://127.0.0.1:8000/api/v1/saude, /api/v1/referencias e http://localhost:5173/dev/status.
-  3. `npm run verificar`.
+- Último PR concluído: PR-04 — Cadastro de usuário, Termos e Privacidade — Integrante 5 — 2026-11-06
+- O que entrou: tabela `users` no modelo do domínio (migration, model `User` com atributos e casts, factory); `POST /api/v1/auth/cadastro` (FormRequest com mensagens pt-BR, Service que cria a conta e inicia a sessão, 201 com `UsuarioResource`, rate limit 10/min por IP); tela /cadastro ("Crie sua conta", abas Sou Jogador/Sou Treinador, React Hook Form + Zod, erros da API no próprio campo); páginas /termos e /privacidade; `LayoutPublico` com o landmark `main` das rotas públicas; `src/lib/formularios.js` (`aplicarErrosDaApi`); dependências react-hook-form 7.91.0, zod 4.6.7 e @hookform/resolvers 7.0.3 (ADR-026).
+- Anteriores no mesmo dia: PR-01 (backend com /saude e /referencias), PR-02 (esqueleto do front) e PR-03 (design system; feito sem o Figma, ADR-022).
+- Como testar:
+  1. `composer --working-dir=backend install`, `npm --prefix frontend ci`, backend/.env a partir do .env.example, `php backend/artisan key:generate` e `php backend/artisan migrate`.
+  2. `npm run dev:api` e `npm run dev:web`; abra http://localhost:5173/cadastro, crie uma conta só com o teclado e repita o e-mail para ver o erro no campo; veja /termos e /privacidade.
+  3. `npm run verificar` (backend: Pint, Larastan e 75 testes; frontend: ESLint, 341 testes e build).
+- Próximo: PR-05 — Entrar, sair e rotas protegidas — Integrante 6 (depende do PR-04, concluído). O PR-05 deve preencher a chave `['eu']` do TanStack Query também após o cadastro e cobrir o fluxo real cadastro → início → sair → entrar no Playwright.
 
 ## Em andamento
-- (nada)
+- (nenhum)
 
 ## Pendências
 - [ ] PENDENTE: o grupo vai enviar nomes, usuários do GitHub e e-mails → preencher docs/INTEGRANTES.md.
-- [ ] Dono do repositório: proteger a main (checks `governanca`, `frontend` e `backend` obrigatórios, incluindo administradores) e adicionar os colaboradores.
-- [ ] Antes do PR-03: exportar as 6 telas do Figma em PNG 2x para docs/design/telas/.
-- [ ] PR-01, não conferido na máquina onde foi feito (sem Docker): o docker-compose.yml, o script de init do banco de teste e o caminho completo do `npm run dev` (Docker, migrations, API e front juntos). Quem tiver Docker: rode `npm run dev` e confira /up e /api/v1/saude em http://127.0.0.1:8000 e a /dev/status em http://localhost:5173.
-- [ ] PR-01: o job `backend` do CI (com cobertura por pcov) só roda no GitHub, depois do push; confira que ficou verde antes do merge.
+- [ ] Dono do repositório: proteger a main (checks `governanca`, `frontend` e `backend` obrigatórios, incluindo administradores) e adicionar os colaboradores. Os jobs `frontend` e `backend` só rodam no GitHub quando o PR é aberto; nos PR-02 a PR-04 a mesma sequência foi rodada só na máquina.
+- [ ] PR-04, não conferido: fluxo real navegador → API (csrf-cookie e cookie de sessão persistido após o 201). Evidência atual: Pest (`assertAuthenticatedAs` e cookie na resposta) e MSW no front. O E2E do PR-05 fecha a lacuna.
+- [ ] PR-04: canal de contato real das páginas /termos e /privacidade (o texto remete ao repositório até o dono definir um e-mail).
+- [ ] PR-04: aceite dos termos não é persistido (sem coluna no MODELO-DE-DADOS); possível lacuna de LGPD a decidir pelo grupo.
+- [ ] PR-04: usuário já logado chamando POST /auth/cadastro cria outra conta e troca a sessão (sem regra nos docs); decidir no PR-05 se a rota recusa quem já tem sessão.
+- [ ] PR-04: a tela /cadastro não foi comparada com o PNG do Figma (docs/design/telas vazio); o aceite usa caixa de seleção com o texto do Figma.
+- [ ] PR-04 (revisão de segurança): o limitador `cadastro` conta por `$request->ip()` e o projeto não configura proxies confiáveis. Em produção atrás de proxy reverso todas as requisições chegam com o IP do proxy e o limite de 10/min vira global (um cliente bloqueia o cadastro de todos). Na implantação, configurar `$middleware->trustProxies(at: explode(',', env('TRUSTED_PROXIES', '')))` em backend/bootstrap/app.php só com o(s) IP(s) do proxy real (nunca `*`, senão o X-Forwarded-For passa a ser forjável) e documentar TRUSTED_PROXIES no backend/.env.example. Vale para todos os throttles por IP: entrar (PR-05) e recuperação de senha (PR-07).
+- [ ] PR-03, aceite sem evidência: exportar as 6 telas do Figma em PNG 2x para docs/design/telas/ e comparar lado a lado com /dev/componentes; se houver diferença, ajustar os tokens (frontend/src/estilos/tokens.css e docs/DESIGN.md) e confirmar a fonte (ADR-022).
+- [ ] PR-03, não conferido: leitor de tela real, área segura do iPhone na NavInferior e navegador com fonte padrão diferente de 16 px (o limite de 1024 px do `useLarguraMinima` deixa de coincidir com o `lg` do Tailwind).
+- [ ] PR-03: conferir no navegador o AppShell (navegação fixa embaixo, coluna lateral a partir de 1024 px e o link "Pular para o conteúdo").
+- [ ] PR-01, não conferido na máquina onde foi feito (sem Docker): o docker-compose.yml, o script de init do banco de teste e o caminho completo do `npm run dev`. Quem tiver Docker: rode `npm run dev` e confira /up e /api/v1/saude em http://127.0.0.1:8000 e a /dev/status em http://localhost:5173.
 - [ ] PR-01: o grupo precisa confirmar os valores do enum Nivel (iniciante, intermediario, avancado), que a especificação não lista (ADR-021).
-- [ ] PR-01: backend/AGENTS.md é o arquivo que vem no esqueleto do Laravel (o Boost foi instalado só para o Claude Code e não o reescreveu); ele manda instalar o PHP por script remoto e rodar o boost:install de novo. O grupo decide se remove.
+- [ ] PR-01: backend/AGENTS.md é o arquivo que vem no esqueleto do Laravel; ele manda instalar o PHP por script remoto e rodar o boost:install de novo. O grupo decide se remove.
 - [ ] PR-01: `npm run teste:api` precisa do `composer` visível para o cmd do Windows (composer.bat). Se o npm não achar o Composer, use `composer --working-dir=backend test` ou `npm run verificar`.
-- [ ] PR-01: a falha real do banco na rota de saúde (VerificadorBancoPdo) só tem evidência manual (503 com a API apontada para uma porta fechada); o teste automatizado troca a implementação.
-- [ ] PR-01 (revisão): não há rate limit na API. Não entrou no /saude porque o throttle usa o cache, que fica no banco (CACHE_STORE=database), e derrubaria a rota junto com o banco. Definir no PR-04/PR-05 (login) o throttle das rotas e o armazenamento do contador.
+- [ ] PR-01: a falha real do banco na rota de saúde (VerificadorBancoPdo) só tem evidência manual (503 com a API apontada para uma porta fechada).
+- [ ] PR-01 (revisão): o throttle usa o cache no banco (CACHE_STORE=database). O PR-04 definiu o limitador `cadastro` (10/min por IP); o PR-05 define o do login (5/min por e-mail + IP). O /saude continua sem throttle para não cair junto com o banco.
 - [ ] PR-01 (revisão): no deploy, definir LOG_CHANNEL=stderr, APP_DEBUG=false, SESSION_SECURE_COOKIE=true, FRONTEND_URL com a origem real e configurar trustProxies se houver proxy terminando o TLS.
-- [ ] Depois do merge do PR-01: abrir /dev/status com a API real e conferir o formato de /api/v1/saude (a página aceita os campos na raiz ou dentro de `data`). No PR-02 isso foi conferido só com MSW e com o proxy respondendo 502 sem a API.
-- [ ] PR-03: conferir no navegador o AppShell (navegação fixa embaixo, coluna lateral a partir de 1024 px e o link "Pular para o conteúdo"). No PR-02 o layout foi conferido só por testes de componente, sem abrir o navegador.
+- [ ] Backend e frontend juntos: abrir /dev/status com a API real e conferir o formato de /api/v1/saude. No PR-02 isso foi conferido só com MSW.
 - [ ] `npm audit` do frontend acusa 6 vulnerabilidades moderadas (minimatch, pela cadeia do eslint 10, só desenvolvimento). Não barra o CI (nível high); rever quando o eslint publicar a correção (ADR-016).
 
 ## Ideias para depois
+- Componentes fora da lista do PR-03: Select, Toast e Tabela; um componente CaixaDeSelecao no design system (o aceite do cadastro usa `<input type="checkbox">` com classes dos tokens).
+- Etiqueta com cor por fundamento e por etapa, quando o Figma definir a paleta.
+- Abas: duas na mesma tela com itens de mesmo `id` repetem os ids `aba-<id>` e `painel-<id>`; se precisar, acrescentar um prefixo por grupo.
 - No card de seeders: não criar o usuário de exemplo (test@example.com, senha da factory) em produção.
 - Separar o log dos testes do log diário de desenvolvimento (hoje os testes escrevem em backend/storage/logs).
+- Registrar o aceite dos termos com data e versão (coluna ou tabela nova), se o grupo quiser rastreabilidade de LGPD.
