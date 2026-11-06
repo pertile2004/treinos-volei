@@ -90,4 +90,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sessao::class, 'usuario_id');
     }
+
+    /**
+     * Treinos agendados pelo usuário.
+     *
+     * @return HasMany<Agendamento, $this>
+     */
+    public function agendamentos(): HasMany
+    {
+        return $this->hasMany(Agendamento::class, 'usuario_id');
+    }
 }
