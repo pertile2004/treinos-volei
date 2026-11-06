@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <title>Jogador fazendo toque por cima</title>
+  <line x1="6" y1="88" x2="90" y2="88"/>
+  <circle cx="38" cy="34" r="6"/>
+  <line x1="38" y1="40" x2="37" y2="62"/>
+  <polyline points="38,44 50,39 48,25"/>
+  <polyline points="38,44 58,37 57,26"/>
+  <polyline points="37,62 42,74 39,86"/>
+  <polyline points="37,62 34,74 29,86"/>
+  <circle cx="53" cy="13" r="7"/>
+  <path d="M49 8.5 Q51 16 59 15"/>
+  <path stroke-dasharray="2 4" stroke-linecap="butt" d="M63 8 Q77 0 90 22"/>
+</svg>

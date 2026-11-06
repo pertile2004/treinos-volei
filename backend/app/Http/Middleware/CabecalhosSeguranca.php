@@ -22,6 +22,9 @@ class CabecalhosSeguranca
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+        // Só frame-src por enquanto: libera o player do YouTube (modo nocookie) no detalhe do exercício
+        // sem restringir o resto do SPA; a CSP completa é revisada no PR de segurança.
+        $response->headers->set('Content-Security-Policy', "frame-src 'self' https://www.youtube-nocookie.com");
 
         if ($this->app->isProduction()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');

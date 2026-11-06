@@ -29,7 +29,7 @@ Com Docker:
 
 Sem Docker (PostgreSQL instalado na máquina):
 1. Crie o usuário `volleypro` (senha `volleypro`, só para desenvolvimento) e os bancos `volleypro` e `volleypro_teste`, os dois com esse usuário como dono.
-2. `php backend/artisan migrate`
+2. `php backend/artisan migrate` e `php backend/artisan db:seed` (usuário de exemplo e os 42 exercícios da biblioteca)
 3. `npm run dev:api` — só a API em http://127.0.0.1:8000.
 4. Em outro terminal, `npm run dev:web` — só o front em http://localhost:5173.
 

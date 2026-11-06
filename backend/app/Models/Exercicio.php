@@ -72,4 +72,20 @@ class Exercicio extends Model
     {
         return $this->belongsTo(User::class, 'criado_por');
     }
+
+    /**
+     * Caminho da ilustração própria e neutra de cada fundamento (arquivo estático do SPA).
+     */
+    public static function ilustracaoDoFundamento(Fundamento $fundamento): string
+    {
+        return '/ilustracoes/'.$fundamento->value.'.svg';
+    }
+
+    /**
+     * Imagem mostrada na biblioteca: a própria, ou a ilustração do fundamento quando não há.
+     */
+    public function imagemUrlOuPadrao(): string
+    {
+        return $this->imagem_url ?? self::ilustracaoDoFundamento($this->fundamento);
+    }
 }

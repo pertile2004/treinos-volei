@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <title>Jogador saltando para bloquear a bola sobre a rede</title>
+  <line x1="6" y1="88" x2="90" y2="88"/>
+  <circle cx="30" cy="25" r="6"/>
+  <line x1="31" y1="31" x2="34" y2="58"/>
+  <line x1="32" y1="40" x2="54" y2="13"/>
+  <line x1="32" y1="40" x2="58" y2="17"/>
+  <polyline points="34,58 33,69 31,79"/>
+  <polyline points="34,58 38,69 37,80"/>
+  <circle cx="69" cy="14" r="7"/>
+  <path d="M65 9.5 Q67 17 75 16"/>
+  <line x1="54" y1="44" x2="54" y2="88"/>
+  <rect x="46" y="34" width="16" height="10" rx="1"/>
+  <path stroke-width="1.5" d="M50 34 v10 M54 34 v10 M58 34 v10"/>
+</svg>
