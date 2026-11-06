@@ -10,8 +10,8 @@ A coluna "Onde" recebe os caminhos dos arquivos conforme os PRs entregam.
 | ISP | Interfaces pequenas e específicas (ex.: GeradorDeCodigoConvite) | |
 | DIP | Injeção pelo construtor via container do Laravel | |
 | KISS e YAGNI | Escopo fechado por PR; sem abstração especulativa (ADR-002) | CLAUDE.md, docs/ROADMAP.md |
-| DRY | Enums únicos no backend, expostos em /referencias para o front | |
-| Nomenclatura expressiva | Português claro, sem abreviações; Pint e ESLint | |
+| DRY | Enums únicos no backend, expostos em /referencias para o front; tokens e componentes únicos no design system | frontend/src/estilos/tokens.css, frontend/src/componentes/ |
+| Nomenclatura expressiva | Português claro, sem abreviações; Pint e ESLint | frontend/src/componentes/ (componentes e props em português) |
 | Funções pequenas | Revisão em todo PR e análise estática | |
 | Tratamento de erros | Handler central com JSON padrão e request_id; nada de catch silencioso | |
 | ORM | Eloquent | |

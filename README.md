@@ -28,6 +28,8 @@ Outros comandos do front, sempre a partir da raiz:
 
 O Vite encaminha /api, /sanctum e /docs para a API em http://127.0.0.1:8000. Sem a API no ar, as telas abrem e http://localhost:5173/dev/status mostra uma mensagem de erro com o botão "Tentar de novo". Para usar outras portas, defina E2E_WEB_PORT (front) e E2E_API_PORT (API) antes do comando.
 
+O catálogo do design system fica em http://localhost:5173/dev/componentes (só em desenvolvimento): todos os componentes de frontend/src/componentes/ em todos os estados. Os tokens e a tabela de contraste estão no docs/DESIGN.md.
+
 ## Equipe
 docs/INTEGRANTES.md
 
