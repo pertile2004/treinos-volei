@@ -13,7 +13,8 @@ Estrutura real desde o PR-01 (tudo em backend/):
 - app/Enums: Papel, Fundamento, Nivel, Etapa, Visibilidade e OrigemSessao, todos com `rotulo()`; o trait Concerns/ComOpcoes devolve a lista `valor`/`rotulo` usada em /referencias.
 - app/Contracts/VerificadorBanco e app/Services/VerificadorBancoPdo: checagem do banco; o bind fica no AppServiceProvider, que também liga `Model::shouldBeStrict()` fora de produção.
 - app/Services (SaudeService, ReferenciasService), app/Http/Controllers/Api/V1 (controllers invocáveis) e app/Http/Resources.
-- config/logging.php: canais `daily` (desenvolvimento) e `stderr` (produção) com JsonFormatter; o Context entra em `extra`.
+- config/cors.php: só a origem de FRONTEND_URL, com credenciais. A rota /saude fica fora do middleware de sessão.
+- config/logging.php: canais `daily` (desenvolvimento) e `stderr` (produção e padrão sem LOG_CHANNEL) com JsonFormatter; o Context entra em `extra`.
 - lang/pt_BR: mensagens de validação, autenticação, paginação e senha.
 - Raiz: docker-compose.yml (postgres:17 com os bancos volleypro e volleypro_teste, e Mailpit), scripts/dev.mjs (preparação do `npm run dev` e o `npm run dev:api`) e .mcp.json (Laravel Boost).
 - Testes: o phpunit.xml usa o banco volleypro_teste; a variável de ambiente DB_DATABASE, se existir, tem precedência.

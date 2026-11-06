@@ -1,6 +1,6 @@
 # Contrato da API — /api/v1
 
-Autenticação: sessão Sanctum (cookie) na mesma origem. Antes de POST, PUT, PATCH e DELETE, o front obtém o cookie CSRF em GET /sanctum/csrf-cookie (o axios envia o X-XSRF-TOKEN). Toda resposta traz X-Request-Id.
+Autenticação: sessão Sanctum (cookie) na mesma origem. Antes de POST, PUT, PATCH e DELETE, o front obtém o cookie CSRF em GET /sanctum/csrf-cookie (o axios envia o X-XSRF-TOKEN). Toda resposta traz X-Request-Id. Em outra origem (desenvolvimento), o CORS só aceita a origem de FRONTEND_URL, com credenciais.
 
 Formatos:
 - Recurso único: { "data": {...} }
